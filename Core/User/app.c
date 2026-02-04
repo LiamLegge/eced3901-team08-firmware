@@ -8,7 +8,7 @@ extern DMA_HandleTypeDef hdma_tim1_ch1;
 
 #define FRAMEDELAY 10
 
-void show_rainbow_fade(uint32_t frame) {
+/*void show_rainbow_fade(uint32_t frame) {
     // The HSV hue is typically 0-255 for a full cycle of colors.
     // Let's pick a base hue that shifts over time, causing the rainbow to move.
     uint8_t baseHue = (uint8_t)(frame % 256); 
@@ -27,13 +27,13 @@ void show_rainbow_fade(uint32_t frame) {
         ARGB_SetHSV(i, hue, saturation, value);
     }
 }
-
+*/
 void app(void) {
 
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
 
     ARGB_Init();
-    ARGB_SetBrightness(128);
+    ARGB_SetBrightness(255);
     ARGB_Clear();
     ARGB_Show();
 
@@ -44,7 +44,7 @@ void app(void) {
         while (ARGB_Ready() != ARGB_READY) { }
         ARGB_Show();
         // show_rainbow_fade(frame);
-        ARGB_SetHSV(0,0,255,128);
+        ARGB_SetHSV(0,0,255,255);
         HAL_Delay(FRAMEDELAY);
         frame++;
     }
