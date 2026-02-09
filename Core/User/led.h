@@ -2,7 +2,8 @@
 #define LED_H
 
 #include "math.h"
-#include "ARGB.h"   
+#include "ARGB.h"
+#include "lidar.h"  
 #include "stm32g0xx_hal.h"
 
 /* Easy definition of LEDs

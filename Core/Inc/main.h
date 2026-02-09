@@ -69,10 +69,14 @@ void Error_Handler(void);
 #define EMAG_SHUNT_GPIO_Port GPIOA
 #define EMAG_Pin GPIO_PIN_1
 #define EMAG_GPIO_Port GPIOA
-#define TOF_SDA_Pin GPIO_PIN_6
-#define TOF_SDA_GPIO_Port GPIOA
-#define TOF_SCL_Pin GPIO_PIN_7
-#define TOF_SCL_GPIO_Port GPIOA
+#define FSK_Pin GPIO_PIN_5
+#define FSK_GPIO_Port GPIOA
+#define Echo_Pin GPIO_PIN_6
+#define Echo_GPIO_Port GPIOA
+#define Trig_Pin GPIO_PIN_7
+#define Trig_GPIO_Port GPIOA
+#define LED_Pin GPIO_PIN_9
+#define LED_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

@@ -83,7 +83,7 @@ void show_collected(uint32_t frame) {
     ARGB_SetHSV(4, hue, sat, val);
 }
 
-// Switch case to set the light mode
+//Switch case to set the lights
 void led_main(void){
 
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn); // Enable the interrupt for the timer
@@ -99,16 +99,16 @@ void led_main(void){
         while (ARGB_Ready() != ARGB_READY) { }
         switch (currentShow) {
             case SHOW_OFF:
-                show_off(frame);
+                show_off();
                 break;
             case SHOW_DANGERLOW:
-                show_dangerlow(frame);
+                show_dangerlow();
                 break;
             case SHOW_DANGERMED:
-                show_dangermed(frame);
+                show_dangermed();
                 break;
             case SHOW_DANGERHIG:
-                show_dangerhig(frame);
+                show_dangerhig();
                 break;
             case SHOW_COLLECTED:
                 show_collected(frame);
@@ -124,11 +124,21 @@ void led_main(void){
     }
 }
 
+//Switch case to set the light mode
 void led_set_show(t_ShowType show){
-        for(;;){
-        show = show + 1;
-        if(show >= 5){
+    state = lidar_func();
+    switch(state){
+        case 1:
             show = 1;
-        }
+            break;
+        case 2:
+            show = 2;
+            break;
+        case 3:
+            show = 3;
+            break;
+        case 4:
+            show = 4;
+            break;
     }
 }

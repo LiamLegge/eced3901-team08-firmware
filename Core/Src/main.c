@@ -20,7 +20,6 @@
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
-#include "i2c.h"
 #include "tim.h"
 #include "usart.h"
 #include "usb_drd_fs.h"
@@ -98,8 +97,8 @@ int main(void)
   MX_TIM2_Init();
   MX_USART3_UART_Init();
   MX_USART5_UART_Init();
-  MX_I2C3_Init();
   MX_USB_DRD_FS_PCD_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   app();
   /* USER CODE END 2 */
