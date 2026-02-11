@@ -37,7 +37,7 @@ uint32_t pwm_data[24];
 int data_pos = 0;
 
 
-/*void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
     if(htim->Instance == TIM15){
         data_pos++;
         if(data_pos > 23){
@@ -46,30 +46,39 @@ int data_pos = 0;
             __HAL_TIM_SET_AUTORELOAD(&htim2, pwm_data[data_pos]);
         }
     }
-}*/
+}
 
 void app(void) {
 
-    HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
+    //HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
 
-    ARGB_Init();
-    ARGB_SetBrightness(255);
-    ARGB_Clear();
-    ARGB_Show();
+    //ARGB_Init();
+    //ARGB_SetBrightness(255);
+    //ARGB_Clear();
+    //ARGB_Show();
     //init_fsk("BYE", pwm_data);
 
+    init_fsk("BYE", pwm_data);
+
+ 
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+
+
+    HAL_TIM_Base_Start_IT(&htim15);
+    
     uint32_t frame = 0;
 
     //start_fsk(pwm_data);
 
+
     // main program loop
     for(;;) {
-        while (ARGB_Ready() != ARGB_READY) { }
-        ARGB_Show();
+        //while (ARGB_Ready() != ARGB_READY) { }
+        //ARGB_Show();
         // show_rainbow_fade(frame);
-        ARGB_SetHSV(0,0,255,255);
-        HAL_Delay(FRAMEDELAY);
-        frame++;
+        //ARGB_SetHSV(0,0,255,255);
+        //HAL_Delay(FRAMEDELAY);
+        //frame++;
     }
 
 }

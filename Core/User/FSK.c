@@ -8,12 +8,15 @@
 #define freq_0 (333-1)
 
 void init_fsk(uint8_t* msg, uint32_t* pwm_data){
+    int count = 0;
     for(int j=0; j < 3; j++){
-        for(int i=0; i < 8; i++){
+        for(int i=7; i >= 0; i--){
             if((msg[j] >> i) & 0x01){
-                pwm_data[i] = freq_1;
+                pwm_data[count] = freq_1;
+                count++;
             }else{
-                pwm_data[i] = freq_0;
+                pwm_data[count] = freq_0;
+                count++;
             }
         }
     }
