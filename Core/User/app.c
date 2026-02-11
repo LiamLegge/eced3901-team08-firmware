@@ -1,9 +1,14 @@
 #include "app.h"
 #include "ARGB.h"
+#include "stm32g0b1xx.h"
 #include "stm32g0xx_hal.h"
+#include "stm32g0xx_hal_tim.h"
+#include "tim.h"
+#include "FSK.h"
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim15;
 extern DMA_HandleTypeDef hdma_tim1_ch1;
 
 #define FRAMEDELAY 10
@@ -28,6 +33,21 @@ extern DMA_HandleTypeDef hdma_tim1_ch1;
     }
 }
 */
+uint32_t pwm_data[24];
+int data_pos = 0;
+
+
+/*void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+    if(htim->Instance == TIM15){
+        data_pos++;
+        if(data_pos > 23){
+            data_pos = 0;
+        }else{
+            __HAL_TIM_SET_AUTORELOAD(&htim2, pwm_data[data_pos]);
+        }
+    }
+}*/
+
 void app(void) {
 
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
@@ -36,8 +56,11 @@ void app(void) {
     ARGB_SetBrightness(255);
     ARGB_Clear();
     ARGB_Show();
+    //init_fsk("BYE", pwm_data);
 
     uint32_t frame = 0;
+
+    //start_fsk(pwm_data);
 
     // main program loop
     for(;;) {
