@@ -58,17 +58,21 @@ NVIC.SysTick_IRQn=true\:3\:0\:false\:false\:true\:false\:true\:false
 NVIC.TIM15_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.TIM1_BRK_UP_TRG_COM_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.TIM1_CC_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
+<<<<<<< HEAD
 NVIC.TIM2_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 PA0.GPIOParameters=GPIO_ModeDefaultPP,GPIO_Speed,GPIO_PuPd
 PA0.GPIO_ModeDefaultPP=GPIO_MODE_AF_PP
 PA0.GPIO_PuPd=GPIO_PULLDOWN
 PA0.GPIO_Speed=GPIO_SPEED_FREQ_LOW
 PA0.Signal=S_TIM2_CH1_ETR
+=======
+PA9.GPIOParameters=GPIO_Speed
+PA9.GPIO_Speed=GPIO_SPEED_FREQ_LOW
+>>>>>>> main
 PA9.Signal=S_TIM1_CH2
 PinOutPanel.RotationAngle=0
 ProjectManager.AskForMigrate=true
 ProjectManager.BackupPrevious=false
-ProjectManager.CompilerLinker=GCC
 ProjectManager.CompilerOptimize=6
 ProjectManager.ComputerToolchain=false
 ProjectManager.CoupleFile=true

@@ -1,10 +1,13 @@
 #include "app.h"
+<<<<<<< HEAD
 #include "ARGB.h"
 #include "stm32g0b1xx.h"
 #include "stm32g0xx_hal.h"
 #include "stm32g0xx_hal_tim.h"
 #include "tim.h"
 #include "FSK.h"
+=======
+>>>>>>> main
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
@@ -13,6 +16,7 @@ extern DMA_HandleTypeDef hdma_tim1_ch1;
 
 #define FRAMEDELAY 10
 
+<<<<<<< HEAD
 /*void show_rainbow_fade(uint32_t frame) {
     // The HSV hue is typically 0-255 for a full cycle of colors.
     // Let's pick a base hue that shifts over time, causing the rainbow to move.
@@ -72,4 +76,8 @@ void app(void) {
         frame++;
     }
 
+=======
+void app(void) {
+    led_main();
+>>>>>>> main
 }
