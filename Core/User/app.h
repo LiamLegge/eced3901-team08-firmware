@@ -1,10 +1,3 @@
-#ifndef APP_H
-#define APP_H
-
-#include "main.h"
-#include "led.h"
-#include "stm32g0xx_hal.h"
+#pragma once
 
 void app(void);
-
-#endif
