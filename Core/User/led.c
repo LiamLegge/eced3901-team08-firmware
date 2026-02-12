@@ -117,13 +117,19 @@ void led_main(void){
     uint16_t distance = sr04_read();
     HAL_Delay(200);
 
-    if(distance > 40){
-        ARGB_SetHSV(0,0,255,128); //RED
+    if(distance > 0 && distance <= 5){
+        currentShow = 4;
+    }
+    else if(distance > 5 && distance <= 61){
+        currentShow = 3;
+    }
+    else if(distance > 61 && distance <= 122){
+        currentShow = 2;
     }
     else{
-        ARGB_SetHSV(0,0,255,128); //RED
+        currentShow = 1;
     }
-/*
+
     // Wait for strip to be ready
     while (ARGB_Ready() != ARGB_READY) { }
     switch (currentShow) {
@@ -145,7 +151,6 @@ void led_main(void){
         default:
             break;
     }
-*/
     
     ARGB_Show();
     HAL_Delay(FRAME_DELAY_MS);
