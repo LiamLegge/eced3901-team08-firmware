@@ -1,4 +1,5 @@
 #include "led.h"
+#include "sr04.h"
 #include "ARGB.h"   
 
 
@@ -19,8 +20,8 @@ typedef enum {
     SHOW_COLLECTED,
     NUM_OF_SHOWS
 } t_ShowType;
-
 t_ShowType currentShow = 1;
+
 uint32_t frame = 0;
 
 // Utility function to make a simple "oscillating" brightness.
@@ -105,11 +106,24 @@ void init_led(void) {
     ARGB_SetBrightness(128); // Set a moderate global brightness (0-255)
     ARGB_Clear();
     ARGB_Show();
+
+    init_sr04();
 }
 
 
 // Switch case to set the light mode
 void led_main(void){
+
+    uint16_t distance = sr04_read();
+    HAL_Delay(200);
+
+    if(distance > 40){
+        ARGB_SetHSV(0,0,255,128); //RED
+    }
+    else{
+        ARGB_SetHSV(0,0,255,128); //RED
+    }
+/*
     // Wait for strip to be ready
     while (ARGB_Ready() != ARGB_READY) { }
     switch (currentShow) {
@@ -131,6 +145,7 @@ void led_main(void){
         default:
             break;
     }
+*/
     
     ARGB_Show();
     HAL_Delay(FRAME_DELAY_MS);
