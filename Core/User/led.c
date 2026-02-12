@@ -10,7 +10,7 @@ extern TIM_HandleTypeDef htim2;
 extern DMA_HandleTypeDef hdma_tim1_ch1;
 
 //Global Defines
-#define FRAME_DELAY_MS 50 
+#define FRAME_DELAY_MS 10 
 
 typedef enum {
     SHOW_OFF = 0,
