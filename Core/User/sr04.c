@@ -22,22 +22,19 @@ static void delay_us(uint16_t time)
 }
 
 
-void SR04_Init(void)
+void init_sr04(void)
 {
     HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 }
 
-void SR04_Read(void)
+uint16_t sr04_read(void)
 {
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
     delay_us(10);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
 
     __HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
-}
 
-uint16_t SR04_GetDistance(void)
-{
     return Distance;
 }
 

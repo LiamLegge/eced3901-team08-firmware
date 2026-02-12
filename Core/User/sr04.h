@@ -2,7 +2,6 @@
 
 void delay(uint16_t time);
 
-void SR04_Init(void);
-void SR04_Read(void);
-uint16_t SR04_GetDistance(void);
+void init_sr04(void);
+uint16_t sr04_Read(void);
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim);
