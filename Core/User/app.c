@@ -41,9 +41,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
     if(htim->Instance == TIM15){
         data_pos++;
         if(data_pos > 23){
+            stop_fsk();
             data_pos = 0;
         }else{
             __HAL_TIM_SET_AUTORELOAD(&htim2, pwm_data[data_pos]);
+            __HAL_TIM_SET_COUNTER(&htim2, 0);
+            __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, pwm_data[data_pos]/2);
         }
     }
 }
@@ -61,12 +64,9 @@ void app(void) {
     init_fsk("BYE", pwm_data);
 
  
-    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-
-
-    HAL_TIM_Base_Start_IT(&htim15);
+    start_fsk(pwm_data);
     
-    uint32_t frame = 0;
+    //uint32_t frame = 0;
 
     //start_fsk(pwm_data);
 
@@ -79,6 +79,8 @@ void app(void) {
         //ARGB_SetHSV(0,0,255,255);
         //HAL_Delay(FRAMEDELAY);
         //frame++;
+        start_fsk(pwm_data);
+        HAL_Delay(1000);
     }
 
 }
