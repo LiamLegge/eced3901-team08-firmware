@@ -1,6 +1,5 @@
 
 #include "app.h"
-#include "ARGB.h"
 #include "stm32g0xx_hal.h"
 
 /* Module headers */
