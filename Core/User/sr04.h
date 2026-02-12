@@ -1,5 +1,9 @@
 #pragma once 
 
+#include "main.h"
+#include "stm32g0xx_hal.h"
+#include "stm32g0xx_hal_tim.h"
+
 void delay(uint16_t time);
 
 void init_sr04(void);
