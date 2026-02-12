@@ -1,4 +1,8 @@
 #include "led.h"
+#include "ARGB.h"   
+
+
+#include "stm32g0xx_hal.h"
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
@@ -17,6 +21,7 @@ typedef enum {
 } t_ShowType;
 
 t_ShowType currentShow = 1;
+uint32_t frame = 0;
 
 // Utility function to make a simple "oscillating" brightness.
 static uint8_t oscillateBrightness(float t, float period, uint8_t minVal, uint8_t maxVal) {
@@ -94,43 +99,40 @@ void show_collected(uint32_t frame) {
     ARGB_SetHSV(4, hue, sat, val);
 }
 
-// Switch case to set the light mode
-void led_main(void){
-
+void init_led(void) {
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn); // Enable the interrupt for the timer
-
     ARGB_Init();  // Initialization
     ARGB_SetBrightness(128); // Set a moderate global brightness (0-255)
     ARGB_Clear();
     ARGB_Show();
-    
-    uint32_t frame = 0;
-    for(;;){
-       // Wait for strip to be ready
-        while (ARGB_Ready() != ARGB_READY) { }
-        switch (currentShow) {
-            case SHOW_OFF:
-                show_off();
-                break;
-            case SHOW_DANGERLOW:
-                show_dangerlow();
-                break;
-            case SHOW_DANGERMED:
-                show_dangermed();
-                break;
-            case SHOW_DANGERHIG:
-                show_dangerhig();
-                break;
-            case SHOW_COLLECTED:
-                show_collected(frame);
-                break;
-            default:
-                break;
-        }
-        
-        ARGB_Show();
-        HAL_Delay(FRAME_DELAY_MS);
-        frame++;
-        
+}
+
+
+// Switch case to set the light mode
+void led_main(void){
+    // Wait for strip to be ready
+    while (ARGB_Ready() != ARGB_READY) { }
+    switch (currentShow) {
+        case SHOW_OFF:
+            show_off();
+            break;
+        case SHOW_DANGERLOW:
+            show_dangerlow();
+            break;
+        case SHOW_DANGERMED:
+            show_dangermed();
+            break;
+        case SHOW_DANGERHIG:
+            show_dangerhig();
+            break;
+        case SHOW_COLLECTED:
+            show_collected(frame);
+            break;
+        default:
+            break;
     }
+    
+    ARGB_Show();
+    HAL_Delay(FRAME_DELAY_MS);
+    frame++;
 }
