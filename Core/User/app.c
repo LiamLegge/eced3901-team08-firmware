@@ -4,7 +4,7 @@
 #include "stm32g0xx_hal_gpio.h"
 #include "stm32g0xx_hal_tim.h"
 
-extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim3;
 
 volatile uint16_t Distance = 0;
 volatile uint16_t Is_First_Captured = 0;
@@ -13,29 +13,29 @@ volatile uint16_t IC_Val2 = 0;
 volatile uint16_t Difference = 0;
 
 void app(void) {
-    HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_1);
+    HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
     while(1){
         HCSR04_Read();
         HAL_Delay(200);
         if(Distance > 40){
-            HAL_GPIO_TogglePin(GPIOA,  GPIO_PIN_7);
+            HAL_GPIO_TogglePin(GPIOA,  GPIO_PIN_9);
         }
     }
 }
 
 void delay(uint16_t time){
-    __HAL_TIM_SET_COUNTER(&htim1, 0);
-    while(__HAL_TIM_GET_COUNTER(&htim1) < time);
+    __HAL_TIM_SET_COUNTER(&htim3, 0);
+    while(__HAL_TIM_GET_COUNTER(&htim3) < time);
 }
 
 void HCSR04_Read(void){
     /* Drive the TRIG pin (use TRIG_Pin/TRIG_GPIO_Port defined in main.h) */
-    HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_SET);  // pull the TRIG pin HIGH
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);  // pull the TRIG pin HIGH
 	delay(10);  // wait for 10 us
-	HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_RESET);  // pull the TRIG pin low
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);  // pull the TRIG pin low
 
-	__HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
+	__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
 }
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim){
@@ -69,7 +69,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim){
 
             // set polarity to rising edge
             __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_RISING);
-            __HAL_TIM_DISABLE_IT(&htim1, TIM_IT_CC1);
+            __HAL_TIM_DISABLE_IT(&htim3, TIM_IT_CC1);
         }
     }
 }
