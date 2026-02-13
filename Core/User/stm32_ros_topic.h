@@ -13,7 +13,9 @@ void stm32_send_msg(uint8_t byte);
 
 /* Commands for firmware functions */
 
-void send_ros_message(uint8_t msg[]);
+void send_uart_message(uint8_t *msg, uint16_t length);
+
+void send_ros_message(uint8_t *msg);
 void send_byte(uint8_t byte);
 
 

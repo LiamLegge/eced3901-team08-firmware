@@ -11,13 +11,15 @@ void init_ros_topic(UART_HandleTypeDef *huart) {
 
 void ros_topic_main(void) {
     // Simple heartbeat
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-    uint8_t byte = 0x55;
-    send_byte(byte);
+    uint8_t msg[] = "heartbeat\r\n";
+    send_uart_message(msg, sizeof(msg) - 1);
 }
 
-void send_ros_message(uint8_t msg[]) {
-    (void)msg;
+void send_uart_message(uint8_t *msg, uint16_t length) {
+    if (ros_uart == NULL) {
+        return;
+    }
+    HAL_UART_Transmit(ros_uart, (uint8_t *)msg, length, HAL_MAX_DELAY);
 }
 
 void send_byte(uint8_t byte) {
