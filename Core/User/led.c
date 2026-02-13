@@ -7,6 +7,17 @@ extern DMA_HandleTypeDef hdma_tim1_ch1;
 //Global Defines
 #define FRAME_DELAY_MS 50 
 
+typedef enum {
+    SHOW_OFF = 0,
+    SHOW_DANGERLOW,
+    SHOW_DANGERMED,
+    SHOW_DANGERHIG,
+    SHOW_COLLECTED,
+    NUM_OF_SHOWS
+} t_ShowType;
+
+t_ShowType currentShow = 1;
+
 // Utility function to make a simple "oscillating" brightness.
 static uint8_t oscillateBrightness(float t, float period, uint8_t minVal, uint8_t maxVal) {
     // Create a normalized sine wave between minVal and maxVal
@@ -99,16 +110,16 @@ void led_main(void){
         while (ARGB_Ready() != ARGB_READY) { }
         switch (currentShow) {
             case SHOW_OFF:
-                show_off(frame);
+                show_off();
                 break;
             case SHOW_DANGERLOW:
-                show_dangerlow(frame);
+                show_dangerlow();
                 break;
             case SHOW_DANGERMED:
-                show_dangermed(frame);
+                show_dangermed();
                 break;
             case SHOW_DANGERHIG:
-                show_dangerhig(frame);
+                show_dangerhig();
                 break;
             case SHOW_COLLECTED:
                 show_collected(frame);
@@ -121,14 +132,5 @@ void led_main(void){
         HAL_Delay(FRAME_DELAY_MS);
         frame++;
         
-    }
-}
-
-void led_set_show(t_ShowType show){
-        for(;;){
-        show = show + 1;
-        if(show >= 5){
-            show = 1;
-        }
     }
 }

@@ -1,11 +1,52 @@
+
 #include "app.h"
+#include "ARGB.h"
+#include "stm32g0xx_hal.h"
 
-extern TIM_HandleTypeDef htim1;
-extern TIM_HandleTypeDef htim2;
-extern DMA_HandleTypeDef hdma_tim1_ch1;
+/* Module headers */
+// #include "led.h"
+// #include "fsk.h"
+// #include "sensor.h"
+// #include "cargo.h"
 
-#define FRAMEDELAY 10
+__weak void init_led(void)    {}
+__weak void led_main(void)    {}
 
-void app(void) {
-    led_main();
+__weak void init_fsk(void)    {}
+__weak void fsk_main(void)    {}
+
+__weak void init_sensor(void) {}
+__weak void sensor_main(void) {}
+
+__weak void init_cargo(void)  {}
+__weak void cargo_main(void)  {}
+
+
+void app_init(void)
+{
+    init_led();
+    init_fsk();
+    init_sensor();
+    init_cargo();
+}
+
+/* ============================================================
+ * Application main loop
+ * ============================================================ */
+
+void app(void)
+{
+
+    app_init();
+    
+    for (;;)
+    {
+        led_main();
+        fsk_main();
+        sensor_main();
+        cargo_main();
+
+        /* Optional: cooperative scheduling yield */
+        // HAL_Delay(1);
+    }
 }

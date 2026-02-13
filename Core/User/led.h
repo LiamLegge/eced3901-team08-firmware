@@ -13,18 +13,6 @@
 #define DISTANCE 4
 */
 
-typedef enum {
-    SHOW_OFF = 0,
-    SHOW_DANGERLOW,
-    SHOW_DANGERMED,
-    SHOW_DANGERHIG,
-    SHOW_COLLECTED,
-    NUM_OF_SHOWS
-} t_ShowType;
-
-t_ShowType currentShow = 1;
-
 void led_main(void);
-void led_set_show(t_ShowType show);
 
 #endif
