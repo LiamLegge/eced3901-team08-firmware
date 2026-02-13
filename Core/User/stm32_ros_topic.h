@@ -3,7 +3,11 @@
 #include "stdbool.h"
 #include "stdint.h"
 
-void init_ros_topic(void);
+#include "usart.h"
+
+
+void init_ros_topic(UART_HandleTypeDef *huart);
+void ros_topic_main(void);
 
 void stm32_send_msg(uint8_t byte);
 
