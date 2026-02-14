@@ -1,7 +1,5 @@
 #pragma  once 
 
-#include "math.h"
-
 /* Easy definition of LEDs
 #define PORT 0
 #define BOW 1
