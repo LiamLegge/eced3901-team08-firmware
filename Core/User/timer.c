@@ -4,7 +4,7 @@
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim){
     
-    if(htim->Instance ==  TIM3){
+    if(htim->Instance == TIM3){
         SR04_TIM_IC_Callback(htim);
     }
 }
