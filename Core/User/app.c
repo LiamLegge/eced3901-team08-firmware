@@ -1,14 +1,20 @@
 
 #include "app.h"
+#include "main.h"
 #include "ARGB.h"
+#include "stm32_ros_topic.h"
 #include "stm32g0xx_hal.h"
-
 /* Module headers */
 // #include "led.h"
 // #include "fsk.h"
 // #include "sensor.h"
 // #include "cargo.h"
+#include "stm32_ros_topic.h"
 
+// Handles
+extern UART_HandleTypeDef huart2;
+
+// Weak Functions (overwrite)
 __weak void init_led(void)    {}
 __weak void led_main(void)    {}
 
@@ -24,6 +30,7 @@ __weak void cargo_main(void)  {}
 
 void app_init(void)
 {
+    init_ros_topic(&huart2);
     init_led();
     init_fsk();
     init_sensor();
@@ -38,15 +45,16 @@ void app(void)
 {
 
     app_init();
-    
+ 
     for (;;)
     {
-        led_main();
-        fsk_main();
-        sensor_main();
-        cargo_main();
+        ros_topic_main();
+        // led_main();
+        // fsk_main();
+        // sensor_main();
+        // cargo_main();
 
         /* Optional: cooperative scheduling yield */
-        // HAL_Delay(1);
+         HAL_Delay(100);
     }
 }
