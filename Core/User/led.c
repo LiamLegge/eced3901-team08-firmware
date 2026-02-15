@@ -2,16 +2,21 @@
 #include "sr04.h"
 #include "ARGB.h"   
 
-
+#include "math.h"
 #include "stm32g0xx_hal.h"
 
+
+// Extern Defines
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
 extern DMA_HandleTypeDef hdma_tim1_ch1;
 
-//Global Defines
+// Global Defines
 #define FRAME_DELAY_MS 10 
 
+uint32_t frame = 0;
+
+// Commands Define
 typedef enum {
     SHOW_OFF = 0,
     SHOW_DANGERLOW,
@@ -22,8 +27,6 @@ typedef enum {
 } t_ShowType;
 t_ShowType currentShow = 1;
 
-uint32_t frame = 0;
-
 // Utility function to make a simple "oscillating" brightness.
 static uint8_t oscillateBrightness(float t, float period, uint8_t minVal, uint8_t maxVal) {
     // Create a normalized sine wave between minVal and maxVal
@@ -32,7 +35,6 @@ static uint8_t oscillateBrightness(float t, float period, uint8_t minVal, uint8_
     float range = (float)(maxVal - minVal);
     return (uint8_t)(minVal + sineVal * range);
 }
-
 // Set the default LED colors around the robot
 void led_default(void){
     ARGB_SetHSV(0,0,255,128); //RED
@@ -40,14 +42,12 @@ void led_default(void){
     ARGB_SetHSV(2,85,255,128);//GREEN
     ARGB_SetHSV(3,0,0,128);   //WHITE
 }
-
 // Turn off all the LEDs for startup
 void show_off (void){
     ARGB_FillRGB(0,0,0);
     ARGB_FillHSV(0,0,0);
     ARGB_FillWhite(0);
 }
-
 // Display low danger on the distance LED
 void show_dangerlow(void){
 
@@ -100,21 +100,23 @@ void show_collected(uint32_t frame) {
     ARGB_SetHSV(4, hue, sat, val);
 }
 
+
+// LED Init
 void init_led(void) {
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn); // Enable the interrupt for the timer
     ARGB_Init();  // Initialization
     ARGB_SetBrightness(128); // Set a moderate global brightness (0-255)
     ARGB_Clear();
     ARGB_Show();
-
-    init_sr04();
 }
-
-
 // Switch case to set the light mode
 void led_main(void){
 
-    uint16_t distance = sr04_read();
+
+    sr04_read();
+    HAL_Delay(60);
+    uint16_t distance = get_distance();
+
     HAL_Delay(200);
 
     if(distance > 0 && distance <= 5){
