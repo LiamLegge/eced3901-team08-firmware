@@ -113,11 +113,8 @@ void init_led(void) {
 void led_main(void){
 
 
-    sr04_read();
+    uint16_t distance = sr04_read();
     HAL_Delay(60);
-    uint16_t distance = get_distance();
-
-    HAL_Delay(200);
 
     if(distance > 0 && distance <= 5){
         currentShow = 4;

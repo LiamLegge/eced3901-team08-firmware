@@ -1,5 +1,6 @@
 #include "sr04.h"
 #include "stm32g0xx_hal_tim.h"
+#include <stdint.h>
 
 // Extern Defines
 extern TIM_HandleTypeDef htim3;
@@ -26,17 +27,16 @@ static void delay_us(uint16_t time){
     while (__HAL_TIM_GET_COUNTER(&htim3) < time);
 }
 // Read Function
-void sr04_read(void){
+uint16_t sr04_read(void){
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
     delay_us(10);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
 
     __HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
-}
-// Getter Function
-uint16_t get_distance(void){
+
     return Distance;
 }
+
 // Interrupt
 void SR04_TIM_IC_Callback(TIM_HandleTypeDef *htim){
     if (htim->Channel != HAL_TIM_ACTIVE_CHANNEL_1)
@@ -80,7 +80,6 @@ void sr04_main(void){
             break;
         case SEN_ON:
             sr04_read();
-            get_distance();
             break;
         default:
             break;
