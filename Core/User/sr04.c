@@ -22,8 +22,8 @@ t_ShowType currentSen = 0;
 
 // Internal delay (us)
 static void delay_us(uint16_t time){
-    uint16_t ms = (time + 999) / 1000;  // Round up to milliseconds
-    HAL_Delay(ms > 0 ? ms : 1);
+    __HAL_TIM_SET_COUNTER(&htim3, 0);
+    while (__HAL_TIM_GET_COUNTER(&htim3) < time);
 }
 // Read Function
 void sr04_read(void){
@@ -71,6 +71,7 @@ void SR04_TIM_IC_Callback(TIM_HandleTypeDef *htim){
 
 // Init Sensor
 void init_sr04(void){
+    HAL_TIM_Base_Start(&htim3);
     HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 }
 // Switch case for on and off reading
