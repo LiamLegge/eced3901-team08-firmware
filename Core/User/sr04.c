@@ -22,8 +22,8 @@ t_ShowType currentSen = 0;
 
 // Internal delay (us)
 static void delay_us(uint16_t time){
-    __HAL_TIM_SET_COUNTER(&htim3, 0);
-    while (__HAL_TIM_GET_COUNTER(&htim3) < time);
+    uint16_t ms = (time + 999) / 1000;  // Round up to milliseconds
+    HAL_Delay(ms > 0 ? ms : 1);
 }
 // Read Function
 void sr04_read(void){
