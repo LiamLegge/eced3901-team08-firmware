@@ -123,6 +123,10 @@ void led_main(void){
     HAL_Delay(60);
     uint16_t distance1 = get_distance();
 
+    if(distance1 < distance){
+        distance = distance1;
+    }
+
     HAL_Delay(200);
 
     if(distance > 0 && distance <= 5){
