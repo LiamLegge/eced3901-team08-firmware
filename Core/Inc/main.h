@@ -63,6 +63,8 @@ void Error_Handler(void);
 #define Echo_GPIO_Port GPIOA
 #define Trig0_Pin GPIO_PIN_7
 #define Trig0_GPIO_Port GPIOA
+#define LED_Data_Pin GPIO_PIN_9
+#define LED_Data_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
