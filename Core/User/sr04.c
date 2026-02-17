@@ -1,4 +1,5 @@
 #include "sr04.h"
+#include "timer.h"
 #include "stm32g0xx_hal_tim.h"
 
 // Extern Defines
