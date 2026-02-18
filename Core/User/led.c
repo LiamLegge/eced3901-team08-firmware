@@ -112,23 +112,15 @@ void init_led(void) {
 // Switch case to set the light mode
 void led_main(void){
 
+    uint16_t distance = sr04_read(0);
+    uint16_t distance1 = sr04_read(1);
 
-    sr04_read(0);
-    HAL_Delay(60);
-    uint16_t distance = get_distance();
-
-    HAL_Delay(100);
-
-    sr04_read(1);
-    HAL_Delay(60);
-    uint16_t distance1 = get_distance();
-
+    // Simple Sorter
     if(distance1 < distance){
         distance = distance1;
     }
 
-    HAL_Delay(200);
-
+    // Do switch case instead
     if(distance > 0 && distance <= 5){
         currentShow = 4;
     }
@@ -165,6 +157,6 @@ void led_main(void){
     }
     
     ARGB_Show();
-    HAL_Delay(FRAME_DELAY_MS);
+    //HAL_Delay(FRAME_DELAY_MS);
     frame++;
 }

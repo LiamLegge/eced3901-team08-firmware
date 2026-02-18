@@ -27,7 +27,7 @@ static void delay_us(uint16_t time){
     while (__HAL_TIM_GET_COUNTER(&htim3) < time);
 }
 // Read Function
-void sr04_read(uint16_t c){
+uint16_t sr04_read(uint16_t c){
     if(c == 1){
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
         delay_us(10);
@@ -39,6 +39,8 @@ void sr04_read(uint16_t c){
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
     }
     __HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
+    delay_us(60);
+    return get_distance();
 }
 // Getter Function
 uint16_t get_distance(void){

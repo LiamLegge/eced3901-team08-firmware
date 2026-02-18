@@ -58,6 +58,6 @@ void app(void)
         cargo_main();
 
         /* Optional: cooperative scheduling yield */
-        // HAL_Delay(1);
+        HAL_Delay(1);
     }
 }
