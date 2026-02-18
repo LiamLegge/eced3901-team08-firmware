@@ -33,7 +33,7 @@
 // SK6812  — RGBW, 800kHz
 // DIALIGHT
 
-#define NUM_PIXELS 1 ///< Pixel quantity
+#define NUM_PIXELS 5 ///< Pixel quantity
 
 #define USE_GAMMA_CORRECTION 0 ///< Gamma-correction should fix red&green, try for yourself
 
