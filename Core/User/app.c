@@ -1,14 +1,9 @@
-
 #include "app.h"
-<<<<<<< HEAD
 #include "main.h"
 #include "ARGB.h"
 #include "stm32_ros_topic.h"
-=======
 #include "sr04.h"
->>>>>>> 38-integrate-danger-led-and-sonar
 #include "stm32g0xx_hal.h"
-/* Module headers */
 // #include "led.h"
 // #include "fsk.h"
 // #include "sensor.h"
@@ -17,12 +12,6 @@
 
 // Handles
 extern UART_HandleTypeDef huart2;
-
-/* Module headers */
-// #include "led.h"
-// #include "fsk.h"
-// #include "sensor.h"
-// #include "cargo.h"
 
 __weak void init_led(void)    {}
 __weak void led_main(void)    {}
@@ -42,7 +31,6 @@ __weak void cargo_main(void)  {}
 
 void app_init(void)
 {
-<<<<<<< HEAD
     init_ros_topic(&huart2);
     init_led();
     init_fsk();
