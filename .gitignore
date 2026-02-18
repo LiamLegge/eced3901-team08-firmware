@@ -1,3 +1,51 @@
-build
-mx.scratch
-!.settings
+# =====================
+# Build outputs (CMake / Make)
+# =====================
+build/
+bin/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# =====================
+# Compiled / object files
+# =====================
+*.o
+*.so
+*.a
+*.d
+*.elf
+*.map
+*.hex
+*.bin
+
+# =====================
+# IDE / Editor settings
+# =====================
+# VSCode
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Eclipse/IDE specific
+.settings/
+
+# Clangd
+.clangd/
+
+# =====================
+# OS / Misc
+# =====================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# =====================
+# Dependency / tool output
+# =====================
+# Example: STM32CubeIDE output folders
+*.launch
+*.project
+*.cproject
