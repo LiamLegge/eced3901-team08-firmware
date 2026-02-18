@@ -49,3 +49,5 @@ Thumbs.db
 *.launch
 *.project
 *.cproject
+.clangd
+.vscode/settings.json
