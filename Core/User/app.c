@@ -3,6 +3,7 @@
 #include "main.h"
 #include "ARGB.h"
 #include "stm32_ros_topic.h"
+#include "sr04.h"
 #include "stm32g0xx_hal.h"
 /* Module headers */
 // #include "led.h"

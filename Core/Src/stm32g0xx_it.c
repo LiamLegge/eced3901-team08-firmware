@@ -57,7 +57,7 @@
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_tim1_ch2;
 extern TIM_HandleTypeDef htim1;
-extern UART_HandleTypeDef huart2;
+extern TIM_HandleTypeDef htim3;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -185,17 +185,17 @@ void TIM1_CC_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles USART2 + LPUART2 Interrupt.
+  * @brief This function handles TIM3, TIM4 global Interrupt.
   */
-void USART2_LPUART2_IRQHandler(void)
+void TIM3_TIM4_IRQHandler(void)
 {
-  /* USER CODE BEGIN USART2_LPUART2_IRQn 0 */
+  /* USER CODE BEGIN TIM3_TIM4_IRQn 0 */
 
-  /* USER CODE END USART2_LPUART2_IRQn 0 */
-  HAL_UART_IRQHandler(&huart2);
-  /* USER CODE BEGIN USART2_LPUART2_IRQn 1 */
+  /* USER CODE END TIM3_TIM4_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim3);
+  /* USER CODE BEGIN TIM3_TIM4_IRQn 1 */
 
-  /* USER CODE END USART2_LPUART2_IRQn 1 */
+  /* USER CODE END TIM3_TIM4_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
