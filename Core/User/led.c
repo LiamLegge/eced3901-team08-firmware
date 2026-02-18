@@ -129,7 +129,6 @@ void led_main(void){
 
     HAL_Delay(200);
 
-    /*
     if(distance > 0 && distance <= 5){
         currentShow = 4;
     }
@@ -168,5 +167,4 @@ void led_main(void){
     ARGB_Show();
     HAL_Delay(FRAME_DELAY_MS);
     frame++;
-    */
 }
