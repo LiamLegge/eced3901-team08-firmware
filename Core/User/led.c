@@ -117,7 +117,7 @@ void led_main(void){
     HAL_Delay(60);
     uint16_t distance = get_distance();
 
-    HAL_Delay(400);
+    HAL_Delay(100);
 
     sr04_read(1);
     HAL_Delay(60);
@@ -129,14 +129,6 @@ void led_main(void){
 
     HAL_Delay(200);
 
-    for(;;) {
-        while (ARGB_Ready() != ARGB_READY) { }
-        ARGB_Show();
-        // show_rainbow_fade(frame);
-        ARGB_SetHSV(0,0,255,128);
-        HAL_Delay(FRAME_DELAY_MS);
-        frame++;
-    }
     /*
     if(distance > 0 && distance <= 5){
         currentShow = 4;
