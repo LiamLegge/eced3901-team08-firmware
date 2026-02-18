@@ -113,9 +113,19 @@ void init_led(void) {
 void led_main(void){
 
 
-    sr04_read();
+    sr04_read(0);
     HAL_Delay(60);
     uint16_t distance = get_distance();
+
+    HAL_Delay(100);
+
+    sr04_read(1);
+    HAL_Delay(60);
+    uint16_t distance1 = get_distance();
+
+    if(distance1 < distance){
+        distance = distance1;
+    }
 
     HAL_Delay(200);
 
