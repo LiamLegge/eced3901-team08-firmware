@@ -9,6 +9,7 @@
 // #include "sensor.h"
 // #include "cargo.h"
 #include "stm32_ros_topic.h"
+#include "stm32g0xx_hal_gpio.h"
 
 // Handles
 extern UART_HandleTypeDef huart2;
@@ -40,7 +41,7 @@ void app_init(void)
 }
 
 /* ============================================================
- * Application main loop
+ * Application main loop    
  * ============================================================ */
 
 void app(void)
@@ -51,13 +52,15 @@ void app(void)
     
     for (;;)
     {
+        
         ros_topic_main();
+        HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET); // begin profile
         led_main();
+        HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_RESET); // end profile
         fsk_main();
         sr04_main();
         cargo_main();
 
-        /* Optional: cooperative scheduling yield */
-        // HAL_Delay(1);
+        HAL_Delay(1);
     }
 }
