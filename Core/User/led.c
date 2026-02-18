@@ -37,10 +37,10 @@ static uint8_t oscillateBrightness(float t, float period, uint8_t minVal, uint8_
 }
 // Set the default LED colors around the robot
 void led_default(void){
-    ARGB_SetHSV(0,0,255,128); //RED
-    ARGB_SetHSV(1,0,0,128);   //WHITE
-    ARGB_SetHSV(2,85,255,128);//GREEN
-    ARGB_SetHSV(3,0,0,128);   //WHITE
+    ARGB_SetHSV(1,0,255,128); //RED
+    ARGB_SetHSV(2,0,0,128);   //WHITE
+    ARGB_SetHSV(3,85,255,128);//GREEN
+    ARGB_SetHSV(4,0,0,128);   //WHITE
 }
 // Turn off all the LEDs for startup
 void show_off (void){
@@ -58,7 +58,7 @@ void show_dangerlow(void){
     uint8_t hue = 43; // Yellow
     uint8_t sat = 255;
     uint8_t val = 128;
-    ARGB_SetHSV(4, hue, sat, val);
+    ARGB_SetHSV(0, hue, sat, val);
 
 }
 // Display med danger on the distance LED
@@ -71,7 +71,7 @@ void show_dangermed(void){
     uint8_t hue = 22; // Amber
     uint8_t sat = 255;
     uint8_t val = 128;
-    ARGB_SetHSV(4, hue, sat, val);
+    ARGB_SetHSV(0, hue, sat, val);
 
 }
 // Display high danger on the distance LED
@@ -81,10 +81,10 @@ void show_dangerhig(void) {
 
     // DISTANCE
 
-    uint8_t hue = 5; // Red
+    uint8_t hue = 0; // Red
     uint8_t sat = 255;
     uint8_t val = 128;
-    ARGB_SetHSV(4, hue, sat, val);
+    ARGB_SetHSV(0, hue, sat, val);
 }
 // Display oscillating on distance LED
 void show_collected(uint32_t frame) {
@@ -97,7 +97,7 @@ void show_collected(uint32_t frame) {
     uint8_t hue = 35; // Gold
     uint8_t sat = 255;
     uint8_t val = oscillateBrightness(t, 60.00f, 0, 255);
-    ARGB_SetHSV(4, hue, sat, val);
+    ARGB_SetHSV(0, hue, sat, val);
 }
 
 
@@ -113,10 +113,7 @@ void init_led(void) {
 void led_main(void){
 
     uint16_t distance1 = sr04_read(0);
-    HAL_Delay(60);
-
     uint16_t distance2 = sr04_read(1);
-    HAL_Delay(60);
 
     // Simple Sorter
     uint16_t minDistance = 0;

@@ -1,6 +1,7 @@
 #include "sr04.h"
 #include "timer.h"
 #include "stm32g0xx_hal_tim.h"
+#include "stdbool.h"
 
 // Extern Defines
 extern TIM_HandleTypeDef htim3;
@@ -11,6 +12,7 @@ static volatile uint8_t  Is_First_Captured = 0;
 static volatile uint16_t IC_Val1 = 0;
 static volatile uint16_t IC_Val2 = 0;
 static volatile uint16_t Difference = 0;
+static volatile bool dataReady = false;
 
 
 // State Define
@@ -39,11 +41,21 @@ uint16_t sr04_read(uint16_t c){
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
     }
     __HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
-    delay_us(60);
     return get_distance();
 }
 // Getter Function
 uint16_t get_distance(void){
+    uint32_t start = HAL_GetTick();
+
+    while (!dataReady)
+    {
+        if ((HAL_GetTick() - start) > 30) { // ~30 ms timeout
+            dataReady = false;
+            return 0xFFFF; // invalid / timeout
+        }
+    }
+
+    dataReady = false; 
     return Distance;
 }
 // Interrupt
@@ -70,11 +82,12 @@ void SR04_TIM_IC_Callback(TIM_HandleTypeDef *htim){
 
         /* Distance in cm */
         Distance = (uint16_t)(Difference * 0.034f / 2.0f);
-
+        
         Is_First_Captured = 0;
         __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1,
-                                     TIM_INPUTCHANNELPOLARITY_RISING);
+        TIM_INPUTCHANNELPOLARITY_RISING);
         __HAL_TIM_DISABLE_IT(&htim3, TIM_IT_CC1);
+        dataReady = true;
     }
 }
 
