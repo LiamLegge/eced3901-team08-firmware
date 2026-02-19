@@ -4,8 +4,13 @@
 #include <stdarg.h>
 #include <string.h>
 
+// Handle for IT
+extern UART_HandleTypeDef huart2;
+
 static UART_HandleTypeDef *ros_uart = NULL;
 static uint32_t loop_start;
+
+uint8_t rxBuffer[12] = {0};
 
 static void profile_loop(uint32_t start_time)
 {
@@ -84,4 +89,11 @@ void print_log(const char *fmt, ...) {
                       (uint8_t *)buffer,
                       len,
                       HAL_MAX_DELAY);
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    (void)huart;
+    print_log("[ LOG ] Interrupt received");
+    HAL_UART_Receive_IT(&huart2, rxBuffer, 12);
 }

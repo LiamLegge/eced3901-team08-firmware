@@ -73,6 +73,7 @@ NVIC.TIM1_BRK_UP_TRG_COM_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.TIM1_CC_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.TIM2_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.TIM3_TIM4_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
+NVIC.USART2_LPUART2_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 PA1.Signal=S_TIM2_CH2
 PA2.Mode=Asynchronous
 PA2.Signal=USART2_TX
