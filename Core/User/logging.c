@@ -4,22 +4,17 @@
 #include <stdarg.h>
 #include <string.h>
 
-// Handle for IT
-extern UART_HandleTypeDef UART_HANDLE;
-
 static UART_HandleTypeDef *ros_uart = NULL;
 static uint32_t loop_start;
 
-uint8_t rxBuffer[12] = {0};
 
 static void profile_loop(uint32_t start_time)
 {
     uint32_t loop_time = HAL_GetTick() - start_time;
 
-    if (loop_time > 5)
-    {
+    if (loop_time > 5) {
         char buf[64];
-        snprintf(buf, sizeof(buf),      "[ LOG ] Loop (ms):     %lu ", (unsigned long)loop_time);
+        snprintf(buf, sizeof(buf), "[ LOG ] Loop (ms):     %lu ", (unsigned long)loop_time);
         print_log(buf);
     }
 }
@@ -27,27 +22,29 @@ static void profile_loop(uint32_t start_time)
 void profile_begin(void) {
     char buf[64];
 
-    print_log("[ LOG ] Starting profiler...");
     loop_start = HAL_GetTick();
-
-    snprintf(buf, sizeof(buf),          "[ LOG ] Start (ms):   %lu", (unsigned long)loop_start);
-    print_log(buf);
-
+    
+    if (VERBOSE) {
+        print_log("[ LOG ] Starting profiler...");
+        snprintf(buf, sizeof(buf),          "[ LOG ] Start (ms):   %lu", (unsigned long)loop_start);
+        print_log(buf);
+    }
 }
 
 
 
 void profile_end(void) {
     char buf[64];
-    print_log("[ LOG ] Ending profiler");
     profile_loop(loop_start);
-    snprintf(buf, sizeof(buf),          "[ LOG ] End (ms):      %lu", (unsigned long)HAL_GetTick());
-    print_log(buf);
+    if (VERBOSE) {
+        print_log("[ LOG ] Ending profiler");
+        snprintf(buf, sizeof(buf),          "[ LOG ] End (ms):      %lu", (unsigned long)HAL_GetTick());
+        print_log(buf);
+    }
 }
 
 
 void init_logging(UART_HandleTypeDef *huart) {
-    HAL_UART_Receive_IT (&UART_HANDLE, rxBuffer, 12);
     ros_uart = huart;
 }
 
@@ -90,9 +87,4 @@ void print_log(const char *fmt, ...) {
                       (uint8_t *)buffer,
                       len,
                       HAL_MAX_DELAY);
-}
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    (void)huart;
-    HAL_UART_Receive_IT(&UART_HANDLE, rxBuffer, 12);
 }

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "usart.h"
+#include <stdbool.h>
+
 
 #define LOG_BUFFER_SIZE 128
-
-#define UART_HANDLE huart2
+#define VERBOSE false
 
 void profile_begin(void);
 void profile_end(void);

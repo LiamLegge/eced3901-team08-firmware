@@ -11,6 +11,7 @@
 #include "stm32_ros_topic.h"
 #include "stm32g0xx_hal_gpio.h"
 #include "logging.h"
+#include "commands.h"
 
 // Handles
 extern UART_HandleTypeDef huart2;
@@ -32,6 +33,7 @@ __weak void cargo_main(void)  {}
 void app_init(void)
 {
     init_logging(&huart2);
+    init_commands();
     init_led();
     init_fsk((uint8_t*)"BYE");
     init_sensor();
@@ -50,11 +52,12 @@ void app(void)
     {
         profile_begin();
 
-        ros_topic_main();
-        led_main();
-        fsk_main(0x01);
-        sr04_main();
-        cargo_main();
+        command_main();
+        // ros_topic_main();
+        // led_main();
+        // fsk_main(0x01);
+        // sr04_main();
+        // cargo_main();
         
         profile_end();
         HAL_Delay(1);
