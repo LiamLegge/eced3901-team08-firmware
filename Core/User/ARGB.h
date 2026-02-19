@@ -31,7 +31,6 @@
 // WS2811F — RGB, 800kHz;
 // WS2812  — GRB, 800kHz;
 // SK6812  — RGBW, 800kHz
-// DIALIGHT
 
 #define NUM_PIXELS 5 ///< Pixel quantity
 
