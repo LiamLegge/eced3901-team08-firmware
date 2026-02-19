@@ -33,12 +33,9 @@ int command_main(void) {
     }
     
     rxReady = false;
-    char logBuffer[64];
 
     char currentCmd = rxByte;
     
-    snprintf(logBuffer, sizeof(logBuffer),"[ CMD ] Char recieved: '%c'", rxByte);
-    print_log(logBuffer);
 
     return currentCmd;
 }
@@ -49,8 +46,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
     rxReady = true;
 
+    char logBuffer[64];
+    snprintf(logBuffer, sizeof(logBuffer),"[ CMD ] Char recieved: '%c'", rxByte);
+    print_log(logBuffer);
+
     enable_rx_interrupt_byte();
-    
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
