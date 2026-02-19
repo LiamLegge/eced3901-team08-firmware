@@ -53,7 +53,6 @@ void app(void)
     {
         profile_begin();
 
-        print_log("[ LOG ] LOOP START");
         ros_topic_main();
         led_main();
         fsk_main();

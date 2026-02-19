@@ -23,6 +23,8 @@ void profile_begin(void) {
     loop_start = HAL_GetTick();
 }
 
+
+
 void profile_end(void) {
     profile_loop(loop_start);
 }
