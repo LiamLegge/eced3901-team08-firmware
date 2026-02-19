@@ -5,6 +5,8 @@
 #include"logging.h"
 #include "stdio.h"
 
+#define VERBOSE true
+
 #define RX_DMA_BUF_SIZE 128
 #define CMD_MAX_LEN 64
 
@@ -12,16 +14,18 @@ extern UART_HandleTypeDef UART_HANDLE;
 
 volatile bool rxReady = false;
 
-static uint8_t rxBuffer[12] = {0};
-static uint8_t rxByte; 
+static volatile uint8_t rxBuffer[RX_DMA_BUF_SIZE] = {0};
 
-static void enable_rx_interrupt(void) {
-    HAL_UART_Receive_IT(&UART_HANDLE, rxBuffer, sizeof(rxBuffer));
+static void clear_dma_buffer(void) {
+    for (size_t i = 0; i < RX_DMA_BUF_SIZE; i++) {
+        rxBuffer[i] = 0;
+    }
+} 
+
+volatile uint8_t *rx_get_buffer(void) {
+    return rxBuffer;
 }
 
-static void enable_rx_interrupt_byte(void) {
-    HAL_UART_Receive_IT(&UART_HANDLE, (unsigned char*)&rxByte, 1);
-}
 
 static void start_rx_to_idle_dma(void)
 {
@@ -36,10 +40,27 @@ static void start_rx_to_idle_dma(void)
 
 void init_commands(void) {    
     rxReady = false;
-    // enable_rx_interrupt();
-    // enable_rx_interrupt_byte();
     start_rx_to_idle_dma();
 }
+
+// Converts a raw serial buffer to an array
+// Clears the array passed to it
+static void read_buffer(char *dest, size_t max_len)
+{
+    volatile uint8_t *src = rx_get_buffer();
+       
+    size_t i;
+    for (i = 0; i < max_len - 1; i++)
+    {
+        uint8_t b = src[i];
+        if (b == '\0' || b == '\n' || b == '\r')
+            break;
+
+        dest[i] = (char)b;
+    }
+    dest[i] = '\0';
+}
+
 
 int command_main(void) {
     if (!rxReady) {
@@ -47,22 +68,27 @@ int command_main(void) {
     }
     
     rxReady = false;
-    char currentCmd = rxByte;
-    return currentCmd;
+    char cmd[RX_DMA_BUF_SIZE + 1] = {0};
+    read_buffer(cmd, sizeof(cmd));
+    clear_dma_buffer();
+    print_log("[ CMD ] %s", cmd);
+
+    return 0;
 }
 
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size)
+{
     if (huart != &UART_HANDLE) return;
 
     rxReady = true;
+    if (VERBOSE) {
+        print_log("[ CMD ] RX burst: %u bytes", (unsigned)size);
+    }
 
-    char logBuffer[64];
-    snprintf(logBuffer, sizeof(logBuffer),"[ CMD ] Char recieved: '%c'", rxByte);
-    print_log(logBuffer);
-
-    enable_rx_interrupt_byte();
+    // Restart for next burst
+    start_rx_to_idle_dma();
 }
+
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 {
@@ -74,21 +100,5 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
     }
 
     // restart reception
-    enable_rx_interrupt_byte();
-}
-
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size)
-{
-    if (huart != &UART_HANDLE) return;
-
-    // 'size' bytes are valid in rx_dma_buf[0..size-1]
-    // for (uint16_t i = 0; i < size; i++) {
-    //     rb_push_byte(rx_dma_buf[i]);
-    // }
-
-    // (Optional) log how many bytes arrived
-    print_log("[CMD] RX burst: %u bytes", (unsigned)size);
-
-    // Restart for next burst
     start_rx_to_idle_dma();
 }
