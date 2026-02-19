@@ -13,20 +13,31 @@ static void profile_loop(uint32_t start_time)
 
     if (loop_time > 5)
     {
-        char buf[32];
-        snprintf(buf, sizeof(buf), "[ LOG ] Loop: %lu ms", loop_time);
+        char buf[64];
+        snprintf(buf, sizeof(buf),      "[ LOG ] Loop (ms):     %lu ", (unsigned long)loop_time);
         print_log(buf);
     }
 }
 
 void profile_begin(void) {
+    char buf[64];
+
+    print_log("[ LOG ] Starting profiler...");
     loop_start = HAL_GetTick();
+
+    snprintf(buf, sizeof(buf),          "[ LOG ] Start (ms):   %lu", (unsigned long)loop_start);
+    print_log(buf);
+
 }
 
 
 
 void profile_end(void) {
+    char buf[64];
+    print_log("[ LOG ] Ending profiler");
     profile_loop(loop_start);
+    snprintf(buf, sizeof(buf),          "[ LOG ] End (ms):      %lu", (unsigned long)HAL_GetTick());
+    print_log(buf);
 }
 
 

@@ -5,6 +5,8 @@
 #include "tim.h"
 #include <stdint.h>
 #include <string.h>
+#include "logging.h"
+#include <stdio.h>
 
 #define freq_1 (1000-1)
 #define freq_0 (333-1)
@@ -19,7 +21,23 @@ extern DMA_HandleTypeDef hdma_tim1_ch1;
 uint32_t pwm_data[24];
 int data_pos = 0;
 
+void fsk_init_message() {
+    char buf[32] = "[ FSK ] Initializing..."; 
+    print_log(buf);
+}
+
+void fsk_start_message() {
+    char buf[32] = "[ FSK ] Starting FSK..."; 
+    print_log(buf);
+}
+
+void fsk_stop_message() {
+    char buf[32] = "[ FSK ] Stopping FSK..."; 
+    print_log(buf);
+}
+
 void init_fsk(uint8_t* msg){
+    fsk_init_message();
     int count = 0;
     for(int j=0; j < 3; j++){
         for(int i=0; i < 8; i++){
@@ -34,8 +52,8 @@ void init_fsk(uint8_t* msg){
     }
 }
 
-
 void start_fsk(void){
+    fsk_start_message();
     __HAL_TIM_SET_AUTORELOAD(&htim2, pwm_data[0]);
     __HAL_TIM_SET_COUNTER(&htim2, 0);
     __HAL_TIM_SET_COUNTER(&htim15, 0);
@@ -44,6 +62,7 @@ void start_fsk(void){
 }
 
 void stop_fsk(void){
+    fsk_stop_message();
     HAL_TIM_Base_Stop_IT(&htim15);
     HAL_TIM_PWM_Stop(&htim2,TIM_CHANNEL_2);
 }
@@ -66,7 +85,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
         }
     }
 }
-
 
 int test_fsk(void) {
     // todo: create logic
