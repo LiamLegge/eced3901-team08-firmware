@@ -1,5 +1,6 @@
 #include "fsk.h"
-#include "FSK.h"
+#include "sr04.h"
+#include "stm32g0xx_hal.h"
 #include "stm32g0xx_hal_tim.h"
 #include "tim.h"
 #include <stdint.h>
@@ -47,6 +48,10 @@ void stop_fsk(void){
     HAL_TIM_PWM_Stop(&htim2,TIM_CHANNEL_2);
 }
 
+void fsk_pulse_once(uint8_t msg[3]) {
+    init_fsk(msg);
+    start_fsk();
+}
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
     if(htim->Instance == TIM15){
@@ -75,10 +80,13 @@ int fsk_main(fskCommand_t cmd) {
         case FSK_CMD_IDLE:
             break;
         case FSK_CMD_START:
+            start_fsk();
             break;
         case FSK_CMD_STOP:
+            stop_fsk();
             break;
         case FSK_CMD_TEST:
+            fsk_pulse_once((uint8_t*)"BYE");
             break;
         default:
             break;

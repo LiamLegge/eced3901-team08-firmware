@@ -52,11 +52,11 @@ void app(void)
 
         ros_topic_main();
         led_main();
-        fsk_main(0);
+        fsk_main(0x01);
         sr04_main();
         cargo_main();
         
-        HAL_Delay(1);
         profile_end();
+        HAL_Delay(1000);
     }
 }
