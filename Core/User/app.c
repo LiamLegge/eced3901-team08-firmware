@@ -1,21 +1,60 @@
+
 #include "app.h"
+#include "main.h"
 #include "ARGB.h"
-#include "stm32g0b1xx.h"
+#include "stm32_ros_topic.h"
 #include "stm32g0xx_hal.h"
-#include "stm32g0xx_hal_tim.h"
-#include "tim.h"
-#include "FSK.h"
-#include <stdint.h>
+/* Module headers */
+// #include "led.h"
+// #include "fsk.h"
+// #include "sensor.h"
+// #include "cargo.h"
+#include "stm32_ros_topic.h"
 
-#define FRAMEDELAY 10
+// Handles
+extern UART_HandleTypeDef huart2;
 
-void app(void) {
-    init_fsk((uint8_t*)"BYE");
-    start_fsk();
+// Weak Functions (overwrite)
+__weak void init_led(void)    {}
+__weak void led_main(void)    {}
 
-    // main program loop
-    for(;;) {
-        start_fsk();
-        HAL_Delay(100);
+__weak void init_fsk(void)    {}
+__weak void fsk_main(void)    {}
+
+__weak void init_sensor(void) {}
+__weak void sensor_main(void) {}
+
+__weak void init_cargo(void)  {}
+__weak void cargo_main(void)  {}
+
+
+void app_init(void)
+{
+    init_ros_topic(&huart2);
+    init_led();
+    init_fsk();
+    init_sensor();
+    init_cargo();
+}
+
+/* ============================================================
+ * Application main loop
+ * ============================================================ */
+
+void app(void)
+{
+
+    app_init();
+ 
+    for (;;)
+    {
+        ros_topic_main();
+        // led_main();
+        // fsk_main();
+        // sensor_main();
+        // cargo_main();
+
+        /* Optional: cooperative scheduling yield */
+         HAL_Delay(100);
     }
 }
