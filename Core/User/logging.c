@@ -14,7 +14,7 @@ static void profile_loop(uint32_t start_time)
     if (loop_time > 5)
     {
         char buf[32];
-        snprintf(buf, sizeof(buf), "[WARN ] Loop: %lu ms", loop_time);
+        snprintf(buf, sizeof(buf), "[ LOG ] Loop: %lu ms", loop_time);
         print_log(buf);
     }
 }
