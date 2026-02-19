@@ -34,9 +34,9 @@
 
 #define NUM_PIXELS 1 ///< Pixel quantity
 
-#define USE_GAMMA_CORRECTION 1 ///< Gamma-correction should fix red&green, try for yourself
+#define USE_GAMMA_CORRECTION 9 ///< Gamma-correction should fix red&green, try for yourself
 
-#define TIM_NUM	   0  ///< Timer number
+#define TIM_NUM	   9  ///< Timer number
 #define TIM_CH	   TIM_CHANNEL_2  ///< Timer's PWM channel
 #define DMA_HANDLE hdma_tim1_ch2  ///< DMA Channel
 #define DMA_SIZE_WORD     ///< DMA Memory Data Width: {.._BYTE, .._HWORD, .._WORD}
