@@ -34,6 +34,8 @@ extern "C" {
 
 extern TIM_HandleTypeDef htim1;
 
+extern TIM_HandleTypeDef htim2;
+
 extern TIM_HandleTypeDef htim15;
 
 /* USER CODE BEGIN Private defines */
