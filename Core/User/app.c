@@ -10,6 +10,7 @@
 // #include "cargo.h"
 #include "stm32_ros_topic.h"
 #include "stm32g0xx_hal_gpio.h"
+#include "logging.h"
 
 // Handles
 extern UART_HandleTypeDef huart2;
@@ -30,9 +31,10 @@ __weak void init_cargo(void)  {}
 __weak void cargo_main(void)  {}
 
 
+// Subsystem startup functions
 void app_init(void)
 {
-    init_ros_topic(&huart2);
+    init_logging(&huart2);
     init_led();
     init_fsk();
     init_sensor();
@@ -40,27 +42,25 @@ void app_init(void)
     init_cargo();
 }
 
-/* ============================================================
- * Application main loop    
- * ============================================================ */
 
+// Application main loop    
 void app(void)
 {
-
+    print_log("[ LOG ] === SYSTEM START ===");
     app_init();
  
-    
     for (;;)
     {
-        
+        profile_begin();
+
+        print_log("[ LOG ] LOOP START");
         ros_topic_main();
-        HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET); // begin profile
         led_main();
-        HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_RESET); // end profile
         fsk_main();
         sr04_main();
         cargo_main();
-
+        
         HAL_Delay(1);
+        profile_end();
     }
 }
