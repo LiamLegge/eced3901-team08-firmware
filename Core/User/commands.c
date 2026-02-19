@@ -71,9 +71,11 @@ int command_main(void) {
     char cmd[RX_DMA_BUF_SIZE + 1] = {0};
     read_buffer(cmd, sizeof(cmd));
     clear_dma_buffer();
+    // todo: check if `cmd` matches a command enum
     print_log("[ CMD ] %s", cmd);
 
-    return 0;
+
+    return 0; // todo: return a command
 }
 
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size)
