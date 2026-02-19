@@ -43,9 +43,9 @@ void app_init(void)
 // Application main loop    
 void app(void)
 {
-    print_log("[ LOG ] === SYSTEM START ===");
     app_init();
- 
+    print_log("[ LOG ] === SYSTEM START ===");
+
     for (;;)
     {
         profile_begin();
