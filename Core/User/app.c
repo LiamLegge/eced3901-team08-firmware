@@ -18,8 +18,6 @@ extern UART_HandleTypeDef huart2;
 __weak void init_led(void)    {}
 __weak void led_main(void)    {}
 
-__weak void fsk_main(void)    {}
-
 __weak void init_sensor(void) {}
 __weak void sensor_main(void) {}
 
@@ -54,7 +52,7 @@ void app(void)
 
         ros_topic_main();
         led_main();
-        fsk_main();
+        fsk_main(0);
         sr04_main();
         cargo_main();
         

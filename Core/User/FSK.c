@@ -1,4 +1,5 @@
 #include "fsk.h"
+#include "FSK.h"
 #include "stm32g0xx_hal_tim.h"
 #include "tim.h"
 #include <stdint.h>
@@ -59,4 +60,28 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
             __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, pwm_data[data_pos]/2);
         }
     }
+}
+
+
+int test_fsk(void) {
+    // todo: create logic
+    return 0;
+}
+
+// This function is the "main" loop of the FSK, 
+int fsk_main(fskCommand_t cmd) {
+
+    switch(cmd) {
+        case FSK_CMD_IDLE:
+            break;
+        case FSK_CMD_START:
+            break;
+        case FSK_CMD_STOP:
+            break;
+        case FSK_CMD_TEST:
+            break;
+        default:
+            break;
+    }
+    return 0;
 }
