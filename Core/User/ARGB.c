@@ -148,7 +148,7 @@ void ARGB_Init(void) {
     TIM_HANDLE.Instance->ARR = (uint16_t) (APBfq - 1);   // set timer prescaler
     TIM_HANDLE.Instance->EGR = 1;                        // update timer registers
 #if defined(WS2811F) || defined(WS2811S)
-    PWM_HI = (u8_t) (APBfq * 0.48) - 1;     // Log.1 - 48% - 0.60us/1.2us
+    PWM_HI = (u8_t) (APBfq * 0.75) - 1;     // Log.1 - 75% - 0.90us/1.2us
     PWM_LO = (u8_t) (APBfq * 0.20) - 1;     // Log.0 - 20% - 0.25us/0.5us
 #endif
 #ifdef WS2812
