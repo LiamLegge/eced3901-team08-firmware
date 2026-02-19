@@ -57,6 +57,6 @@ void app(void)
         cargo_main();
         
         profile_end();
-        HAL_Delay(1000);
+        HAL_Delay(1);
     }
 }

@@ -4,6 +4,8 @@
 
 #define LOG_BUFFER_SIZE 128
 
+#define UART_HANDLE huart2
+
 void profile_begin(void);
 void profile_end(void);
 

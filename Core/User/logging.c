@@ -5,7 +5,7 @@
 #include <string.h>
 
 // Handle for IT
-extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef UART_HANDLE;
 
 static UART_HandleTypeDef *ros_uart = NULL;
 static uint32_t loop_start;
@@ -47,6 +47,7 @@ void profile_end(void) {
 
 
 void init_logging(UART_HandleTypeDef *huart) {
+    HAL_UART_Receive_IT (&UART_HANDLE, rxBuffer, 12);
     ros_uart = huart;
 }
 
@@ -91,9 +92,7 @@ void print_log(const char *fmt, ...) {
                       HAL_MAX_DELAY);
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     (void)huart;
-    print_log("[ LOG ] Interrupt received");
-    HAL_UART_Receive_IT(&huart2, rxBuffer, 12);
+    HAL_UART_Receive_IT(&UART_HANDLE, rxBuffer, 12);
 }
