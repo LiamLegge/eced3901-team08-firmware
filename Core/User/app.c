@@ -1,4 +1,3 @@
-
 #include "app.h"
 #include "ARGB.h"
 #include "stm32g0b1xx.h"
@@ -52,8 +51,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
     }
 }
 
-__weak void init_led(void)    {}
-__weak void led_main(void)    {}
+void app(void) {
 
     //HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
 
@@ -85,31 +83,4 @@ __weak void led_main(void)    {}
         HAL_Delay(1000);
     }
 
-void app_init(void)
-{
-    init_led();
-    init_fsk();
-    init_sensor();
-    init_cargo();
-}
-
-/* ============================================================
- * Application main loop
- * ============================================================ */
-
-void app(void)
-{
-
-    app_init();
-    
-    for (;;)
-    {
-        led_main();
-        fsk_main();
-        sensor_main();
-        cargo_main();
-
-        /* Optional: cooperative scheduling yield */
-        // HAL_Delay(1);
-    }
 }
