@@ -24,7 +24,7 @@ void profile_begin(void) {
 
     loop_start = HAL_GetTick();
     
-    if (VERBOSE) {
+    if (PROFILE_VERBOSE) {
         print_log("[ LOG ] Starting profiler...");
         snprintf(buf, sizeof(buf),          "[ LOG ] Start (ms):   %lu", (unsigned long)loop_start);
         print_log(buf);
@@ -36,7 +36,7 @@ void profile_begin(void) {
 void profile_end(void) {
     char buf[64];
     profile_loop(loop_start);
-    if (VERBOSE) {
+    if (PROFILE_VERBOSE) {
         print_log("[ LOG ] Ending profiler");
         snprintf(buf, sizeof(buf),          "[ LOG ] End (ms):      %lu", (unsigned long)HAL_GetTick());
         print_log(buf);
