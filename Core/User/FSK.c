@@ -9,7 +9,6 @@
 #define dty_cyc1 (freq_1/2)
 #define dty_cyc0 (freq_0/2)
 
-<<<<<<< working-fsk
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim15;
@@ -19,16 +18,13 @@ uint32_t pwm_data[24];
 int data_pos = 0;
 
 void init_fsk(uint8_t* msg){
-=======
-void init_fsk(uint8_t* msg, uint32_t* pwm_data){
->>>>>>> 18-feat-implement-fsk
     int count = 0;
     for(int j=0; j < 3; j++){
         for(int i=0; i < 8; i++){
             if((msg[j] >> i) & 0x01){
                 pwm_data[count] = freq_1;
                 count++;
-            }else{
+            } else{
                 pwm_data[count] = freq_0;
                 count++;
             }
@@ -36,11 +32,8 @@ void init_fsk(uint8_t* msg, uint32_t* pwm_data){
     }
 }
 
-<<<<<<< working-fsk
+
 void start_fsk(void){
-=======
-void start_fsk(uint32_t* pwm_data){
->>>>>>> 18-feat-implement-fsk
     __HAL_TIM_SET_AUTORELOAD(&htim2, pwm_data[0]);
     __HAL_TIM_SET_COUNTER(&htim2, 0);
     __HAL_TIM_SET_COUNTER(&htim15, 0);
@@ -52,7 +45,7 @@ void stop_fsk(void){
     HAL_TIM_Base_Stop_IT(&htim15);
     HAL_TIM_PWM_Stop(&htim2,TIM_CHANNEL_2);
 }
-<<<<<<< working-fsk
+
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
     if(htim->Instance == TIM15){
@@ -67,5 +60,3 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
         }
     }
 }
-=======
->>>>>>> 18-feat-implement-fsk
