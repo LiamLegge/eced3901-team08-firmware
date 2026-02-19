@@ -9,6 +9,11 @@
 #define dty_cyc1 (freq_1/2)
 #define dty_cyc0 (freq_0/2)
 
+extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim15;
+extern DMA_HandleTypeDef hdma_tim1_ch1;
+
 uint32_t pwm_data[24];
 int data_pos = 0;
 
