@@ -16,6 +16,7 @@ volatile uint16_t Difference = 0;
 // Distance Variables
 volatile uint16_t Distance = 0;
 volatile uint16_t Distance1 = 0;
+volatile uint16_t minDistance = 0;
 
 // State Variables
 volatile uint16_t State = 0;
@@ -33,28 +34,18 @@ void app(void) {
         Distance1 = Difference * 0.034/2.0;
 
         // State Logics
-		if(Distance1 <= 5 && State == 0){
-			//Check for smallest Distance
-			if(Distance1 < Distance){
-				Distance = Distance1;
-			}
-			State = 1;
-		}
-		else if(Distance1 <= 5 && State == 1){
-			Distance = Distance;
-		}
-		else if(Distance1 > 5 && State == 1){
-			if(Distance1 < Distance){
-				Distance = Distance1;
-			}
-			State = 0;
-		}
-		else{
-			//Check for smallest Distance
-			if(Distance1 < Distance){
-				Distance = Distance1;
-			}	
-		}
+        if(State == 0){
+            if(Distance1 <= 5){
+                State = 1;
+            }
+            minDistance = (Distance < Distance1) ? Distance : Distance1; 
+        }
+        else{
+            if(Distance1 > 5){
+                State = 0;
+            }
+            minDistance = Distance;
+        }
 
         // Change LED Output
         if(Distance > 0 && Distance <= 61){
