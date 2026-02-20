@@ -74,8 +74,7 @@ int command_main(void) {
     // todo: check if `cmd` matches a command enum
     print_log("[ CMD ] %s", cmd);
 
-
-    return 0; // todo: return a command
+    return cmd[0];
 }
 
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size)
