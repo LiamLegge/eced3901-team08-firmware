@@ -48,14 +48,21 @@ void app(void)
     app_init();
     print_log("[ LOG ] === SYSTEM START ===");
 
+    char cmd = '0';
+
     for (;;)
     {
         profile_begin();
 
-        command_main();
+        cmd = command_main();
+
+        if (cmd == 0x01) {
+            fsk_main(0x01);
+            cmd = 0x00;
+        }
+
         ros_topic_main();
         led_main();
-        fsk_main(0x01);
         sr04_main();
         cargo_main();
         
