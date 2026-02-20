@@ -110,6 +110,24 @@ void init_led(void) {
     ARGB_Clear();
     ARGB_Show();
 }
+
+t_ShowType check_show(uint16_t distance) {
+    currentShow = 0;
+    if(distance > 0 && distance <= 5){
+        currentShow = SHOW_COLLECTED;
+    }
+    else if(distance > 5 && distance <= 61){
+        currentShow = SHOW_DANGERHIG;
+    }
+    else if(distance > 61 && distance <= 122){
+        currentShow = SHOW_DANGERMED;
+    }
+    else{
+        currentShow = SHOW_DANGERLOW;
+    }
+    return currentShow;
+}
+
 // Switch case to set the light mode
 void led_main(void){
 
@@ -120,19 +138,7 @@ void led_main(void){
     uint16_t minDistance = 0;
     minDistance = (distance1 < distance2) ? distance1 : distance2;
 
-    // Do switch case instead
-    if(minDistance > 0 && minDistance <= 5){
-        currentShow = 4;
-    }
-    else if(minDistance > 5 && minDistance <= 61){
-        currentShow = 3;
-    }
-    else if(minDistance > 61 && minDistance <= 122){
-        currentShow = 2;
-    }
-    else{
-        currentShow = 1;
-    }
+    t_ShowType currentShow = check_show(minDistance); 
 
     if (VERBOSE) {
         char buf[64];
