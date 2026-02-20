@@ -53,11 +53,11 @@ void app(void)
         profile_begin();
 
         command_main();
-        // ros_topic_main();
-        // led_main();
-        // fsk_main(0x01);
-        // sr04_main();
-        // cargo_main();
+        ros_topic_main();
+        led_main();
+        fsk_main(0x01);
+        sr04_main();
+        cargo_main();
         
         profile_end();
         HAL_Delay(1);
