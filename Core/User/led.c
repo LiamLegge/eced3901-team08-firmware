@@ -54,46 +54,26 @@ void show_off (void){
 }
 // Display low danger on the distance LED
 void show_dangerlow(void){
-
     led_default();
-
-    // DISTANCE
-
-    uint8_t hue = 43; // Yellow
-    uint8_t sat = 255;
-    uint8_t val = 128;
-    ARGB_SetHSV(0, hue, sat, val);
-
+    ARGB_SetRGB(0, 0, 255, 0);
 }
 // Display med danger on the distance LED
 void show_dangermed(void){
 
     led_default();
-
-    // DISTANCE
-
-    uint8_t hue = 22; // Amber
-    uint8_t sat = 255;
-    uint8_t val = 128;
-    ARGB_SetHSV(0, hue, sat, val);
-
+    ARGB_SetRGB(0, 255, 255, 0);
 }
+
 // Display high danger on the distance LED
 void show_dangerhig(void) {
-    
     led_default();
-
-    // DISTANCE
-
     ARGB_SetRGB(0, 255, 0, 0);
 }
+
 // Display oscillating on distance LED
 void show_collected(uint32_t frame) {
     uint16_t t = (float)frame;
-
     led_default();
-
-    // DISTANCE
 
     uint8_t hue = 35; // Gold
     uint8_t sat = 255;

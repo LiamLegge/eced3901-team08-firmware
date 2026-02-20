@@ -3,6 +3,8 @@
 #include "stm32g0xx_hal_tim.h"
 #include "stdbool.h"
 
+#define MAX_TIMEOUT_MS 100
+
 // Extern Defines
 extern TIM_HandleTypeDef htim3;
 
@@ -49,7 +51,7 @@ uint16_t get_distance(void){
 
     while (!dataReady)
     {
-        if ((HAL_GetTick() - start) > 30) { // ~30 ms timeout
+        if ((HAL_GetTick() - start) >= MAX_TIMEOUT_MS) {
             dataReady = false;
             return 0xFFFF; // invalid / timeout
         }
