@@ -35,15 +35,11 @@ void app(void) {
 
         // State Logics
         if(State == 0){
-            if(Distance1 <= 5){
-                State = 1;
-            }
+            if(Distance1 <= 5){ State = 1; }
             minDistance = (Distance < Distance1) ? Distance : Distance1; 
         }
         else{
-            if(Distance1 > 5){
-                State = 0;
-            }
+            if(Distance1 > 5){ State = 0; }
             minDistance = Distance;
         }
 
