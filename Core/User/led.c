@@ -9,7 +9,7 @@
 // Extern Defines
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
-extern DMA_HandleTypeDef hdma_tim1_ch1;
+extern DMA_HandleTypeDef hdma_tim1_ch2;
 
 // Global Defines
 #define FRAME_DELAY_MS 10 
@@ -37,13 +37,15 @@ static uint8_t oscillateBrightness(float t, float period, uint8_t minVal, uint8_
     float range = (float)(maxVal - minVal);
     return (uint8_t)(minVal + sineVal * range);
 }
+
 // Set the default LED colors around the robot
 void led_default(void){
-    ARGB_SetHSV(1,0,255,128); //RED
-    ARGB_SetHSV(2,0,0,128);   //WHITE
-    ARGB_SetHSV(3,85,255,128);//GREEN
-    ARGB_SetHSV(4,0,0,128);   //WHITE
+    ARGB_SetRGB(1, 128, 0,   0);     // Red
+    ARGB_SetRGB(2, 128, 128, 128);   // White
+    ARGB_SetRGB(3, 0,   128, 0);     // Green
+    ARGB_SetRGB(4, 128, 128, 128);   // White
 }
+
 // Turn off all the LEDs for startup
 void show_off (void){
     ARGB_FillRGB(0,0,0);
@@ -83,10 +85,7 @@ void show_dangerhig(void) {
 
     // DISTANCE
 
-    uint8_t hue = 0; // Red
-    uint8_t sat = 255;
-    uint8_t val = 128;
-    ARGB_SetHSV(0, hue, sat, val);
+    ARGB_SetRGB(0, 255, 0, 0);
 }
 // Display oscillating on distance LED
 void show_collected(uint32_t frame) {
@@ -166,7 +165,6 @@ void led_main(void){
         default:
             break;
     }
-    
     ARGB_Show();
     //HAL_Delay(FRAME_DELAY_MS);
     frame++;
