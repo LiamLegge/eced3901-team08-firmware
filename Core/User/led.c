@@ -1,10 +1,10 @@
 #include "led.h"
 #include "sr04.h"
 #include "ARGB.h"   
-
 #include "math.h"
 #include "stm32g0xx_hal.h"
-
+#include "logging.h"
+#include <stdbool.h>
 
 // Extern Defines
 extern TIM_HandleTypeDef htim1;
@@ -13,6 +13,8 @@ extern DMA_HandleTypeDef hdma_tim1_ch1;
 
 // Global Defines
 #define FRAME_DELAY_MS 10 
+#define VERBOSE true
+
 
 uint32_t frame = 0;
 
@@ -133,6 +135,16 @@ void led_main(void){
         currentShow = 1;
     }
 
+    if (VERBOSE) {
+        char buf[64];
+        snprintf(buf, sizeof(buf), "[ LED ] Dist1: (cm):   %lu", (unsigned long)distance1);
+        print_log(buf);
+        snprintf(buf, sizeof(buf), "[ LED ] Dist2: (cm):   %lu", (unsigned long)distance2);
+        print_log(buf);
+        snprintf(buf, sizeof(buf), "[ LED ] Show:           %d", (int)currentShow);
+        print_log(buf);
+    }
+ 
     // Wait for strip to be ready
     while (ARGB_Ready() != ARGB_READY) { }
     switch (currentShow) {
