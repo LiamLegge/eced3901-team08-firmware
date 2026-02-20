@@ -13,7 +13,7 @@ extern DMA_HandleTypeDef hdma_tim1_ch2;
 
 // Global Defines
 #define FRAME_DELAY_MS 10 
-#define VERBOSE true
+#define VERBOSE false
 
 
 uint32_t frame = 0;
