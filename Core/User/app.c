@@ -3,23 +3,68 @@
 #include "stm32g0xx_hal.h"
 #include "stm32g0xx_hal_gpio.h"
 #include "stm32g0xx_hal_tim.h"
+#include <stdint.h>
 
 extern TIM_HandleTypeDef htim3;
 
-volatile uint16_t Distance = 0;
+// Scan Variables
 volatile uint16_t Is_First_Captured = 0;
 volatile uint16_t IC_Val1 = 0;
 volatile uint16_t IC_Val2 = 0;
 volatile uint16_t Difference = 0;
 
+// Distance Variables
+volatile uint16_t Distance = 0;
+volatile uint16_t Distance1 = 0;
+
+// State Variables
+volatile uint16_t State = 0;
+
 void app(void) {
     HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
 
     while(1){
-        HCSR04_Read();
-        HAL_Delay(200);
-        if(Distance > 40){
-            HAL_GPIO_TogglePin(GPIOA,  GPIO_PIN_9);
+        HCSR04_Read(0);
+        delay(60);
+        Distance = Difference * 0.034/2.0;
+
+        HCSR04_Read(1);
+        delay(60);
+        Distance1 = Difference * 0.034/2.0;
+
+        // State Logics
+		if(Distance1 <= 5 && State == 0){
+			//Check for smallest Distance
+			if(Distance1 < Distance){
+				Distance = Distance1;
+			}
+			State = 1;
+		}
+		else if(Distance1 <= 5 && State == 1){
+			Distance = Distance;
+		}
+		else if(Distance1 > 5 && State == 1){
+			if(Distance1 < Distance){
+				Distance = Distance1;
+			}
+			State = 0;
+		}
+		else{
+			//Check for smallest Distance
+			if(Distance1 < Distance){
+				Distance = Distance1;
+			}	
+		}
+
+        // Change LED Output
+        if(Distance > 0 && Distance <= 61){
+            HAL_GPIO_TogglePin(GPIOA,  GPIO_PIN_4);
+        }
+        else if(Distance > 61 && Distance <= 122){
+            HAL_GPIO_TogglePin(GPIOA,  GPIO_PIN_5);
+        }
+        else{
+            HAL_GPIO_TogglePin(GPIOA,  GPIO_PIN_8);
         }
     }
 }
@@ -29,12 +74,17 @@ void delay(uint16_t time){
     while(__HAL_TIM_GET_COUNTER(&htim3) < time);
 }
 
-void HCSR04_Read(void){
-    /* Drive the TRIG pin (use TRIG_Pin/TRIG_GPIO_Port defined in main.h) */
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);  // pull the TRIG pin HIGH
-	delay(10);  // wait for 10 us
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);  // pull the TRIG pin low
-
+void HCSR04_Read(uint16_t c){
+    if(c == 1){
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);  // pull the TRIG pin HIGH
+        delay(10);  // wait for 10 us
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);  // pull the TRIG pin low
+    }
+    else{
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);  // pull the TRIG pin HIGH
+        delay(10);  // wait for 10 us
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);  // pull the TRIG pin low 
+    }
 	__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
 }
 
@@ -63,8 +113,6 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim){
                 Difference = (0xFFFF - IC_Val1) + IC_Val2;
             }
 
-            /* calculate distance (cm): Difference * 0.034 / 2 */
-            Distance = Difference * 0.034/2.0;
             Is_First_Captured = 0; // set it back to false
 
             // set polarity to rising edge
