@@ -5,7 +5,6 @@
 
 
 
-
 void ros_topic_main(void) {
     // Simple heartbeat
     

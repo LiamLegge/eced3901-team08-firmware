@@ -1,8 +1,11 @@
 #pragma once
 
 #include "usart.h"
+#include <stdbool.h>
+
 
 #define LOG_BUFFER_SIZE 128
+#define PROFILE_VERBOSE false
 
 void profile_begin(void);
 void profile_end(void);
