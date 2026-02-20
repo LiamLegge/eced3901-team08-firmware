@@ -7,12 +7,11 @@
 static UART_HandleTypeDef *ros_uart = NULL;
 static uint32_t loop_start;
 
-
 static void profile_loop(uint32_t start_time)
 {
     uint32_t loop_time = HAL_GetTick() - start_time;
 
-    if (loop_time > 5) {
+    if (loop_time > 5 && PROFILE_ENABLE) {
         char buf[64];
         snprintf(buf, sizeof(buf), "[ LOG ] Loop (ms):     %lu ", (unsigned long)loop_time);
         print_log(buf);
