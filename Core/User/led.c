@@ -117,7 +117,15 @@ void led_main(void){
 
     // Simple Sorter
     uint16_t minDistance = 0;
-    minDistance = (distance1 < distance2) ? distance1 : distance2;
+
+    if(state == 0){
+        if(distance1 <= 5){ state = 1; }
+        minDistance = (distance1 < distance2) ? distance1 : distance2;
+    }
+    else{
+        if(distance1 > 5){ state = 0; }
+        minDistance = distance1;
+    }
 
     // Do switch case instead
     if(minDistance > 0 && minDistance <= 5){
