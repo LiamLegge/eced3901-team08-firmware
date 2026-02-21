@@ -7,11 +7,12 @@
 // #include "led.h"
 #include "fsk.h"
 // #include "sensor.h"
-// #include "cargo.h"
+#include "cargo.h"
 #include "stm32_ros_topic.h"
 #include "stm32g0xx_hal_gpio.h"
 #include "logging.h"
 #include "commands.h"
+#include <stdint.h>
 
 // Handles
 extern UART_HandleTypeDef huart2;
@@ -24,9 +25,6 @@ __weak void sensor_main(void) {}
 
 __weak void init_sr04(void) {}
 __weak void sr04_main(void) {}
-
-__weak void init_cargo(void)  {}
-__weak void cargo_main(void)  {}
 
 
 // Subsystem startup functions
@@ -64,7 +62,7 @@ void app(void)
         ros_topic_main();
         led_main();
         sr04_main();
-        cargo_main();
+        cargo_main(cmd);
         
         profile_end();
         HAL_Delay(1);
