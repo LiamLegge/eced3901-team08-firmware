@@ -6,10 +6,6 @@ on:
   push:
   pull_request:
 
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,10 +20,10 @@ jobs:
           sudo apt install -y gcc-arm-none-eabi binutils-arm-none-eabi cmake ninja-build
 
       - name: Configure CMake
-        run: cmake -B build -G Ninja
+        run: cmake --preset Release
 
       - name: Build project
-        run: cmake --build build
+        run: cmake --build --preset Release
 
       - name: Firmware info
         run: arm-none-eabi-size build/*.elf
