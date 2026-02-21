@@ -89,11 +89,11 @@ add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
     COMMENT "Generating ${CMAKE_PROJECT_NAME}.bin and .hex"
 )
 
-# --- Flash target ---
+# Flash target
 # Change ST_FLASH if you want openocd, STM32_Programmer_CLI, etc.
 find_program(ST_FLASH st-flash)
 if(NOT ST_FLASH)
-    message(FATAL_ERROR "st-flash not found. Install stlink-tools.")
+#    message(FATAL_ERROR "st-flash not found. Install stlink-tools.")
 endif()
 
 add_custom_target(flash
