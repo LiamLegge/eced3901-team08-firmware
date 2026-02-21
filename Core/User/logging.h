@@ -6,6 +6,7 @@
 
 #define LOG_BUFFER_SIZE 128
 #define PROFILE_VERBOSE false
+#define PROFILE_ENABLE false
 
 void profile_begin(void);
 void profile_end(void);
