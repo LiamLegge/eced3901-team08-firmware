@@ -92,8 +92,16 @@ add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
 # --- Flash target ---
 # Change ST_FLASH if you want openocd, STM32_Programmer_CLI, etc.
 find_program(ST_FLASH st-flash)
-if(NOT ST_FLASH)
-    message(FATAL_ERROR "st-flash not found. Install stlink-tools.")
+if(ST_FLASH)
+    # Create flash target only if tool is available
+    add_custom_target(flash
+        COMMAND ${CMAKE_COMMAND} -E echo "Flashing ${BIN_FILE} to 0x08000000"
+        COMMAND ${ST_FLASH} --reset write ${BIN_FILE} 0x08000000
+        DEPENDS ${CMAKE_PROJECT_NAME}
+        USES_TERMINAL
+    )
+else()
+    message(WARNING "st-flash not found. The 'flash' target will not be available. Install stlink-tools if needed.")
 endif()
 
 add_custom_target(flash

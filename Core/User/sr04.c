@@ -16,15 +16,6 @@ static volatile uint16_t IC_Val2 = 0;
 static volatile uint16_t Difference = 0;
 static volatile bool dataReady = false;
 
-
-// State Define
-typedef enum {
-    SEN_OFF = 0,
-    SEN_ON,
-    NUM_OF_SHOWS
-} t_ShowType;
-t_ShowType currentSen = 0;
-
 // Internal delay (us)
 static void delay_us(uint16_t time){
     __HAL_TIM_SET_COUNTER(&htim3, 0);
@@ -100,14 +91,5 @@ void init_sr04(void){
 }
 // Switch case for on and off reading
 void sr04_main(void){
-    switch (currentSen) {
-        case SEN_OFF:
-            break;
-        case SEN_ON:
-            sr04_read(0);
-            get_distance();
-            break;
-        default:
-            break;
-    }
+
 }
