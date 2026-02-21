@@ -15,7 +15,7 @@ extern DMA_HandleTypeDef hdma_tim1_ch2;
 #define FRAME_DELAY_MS 10 
 #define VERBOSE false
 
-
+uint16_t state = 0;
 uint32_t frame = 0;
 
 // Commands Define
@@ -117,6 +117,7 @@ void led_main(void){
     // Simple Sorter
     uint16_t minDistance = 0;
 
+    // State Machine for Back Sensor
     if(state == 0){
         if(distance1 <= 5){ state = 1; }
         minDistance = (distance1 < distance2) ? distance1 : distance2;
