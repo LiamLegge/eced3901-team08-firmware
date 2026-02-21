@@ -1,9 +1,32 @@
 #include "cargo.h"
 #include "commands.h"
+#include "adc.h"
+#include "logging.h"
+
+#define ADC_HANDLE hadc1
+#define ADC ADC1
+#define VERBOSE true
+
+extern ADC_HandleTypeDef ADC_HANDLE;
 
 t_cargoContext cargo = {0};
 
-uint32_t init_cargo(void) {
+void start_adc(void) {
+    // Calibration (untested)
+    print_log( "[ ADC ] Starting...");
+    if (HAL_ADCEx_Calibration_Start(&ADC_HANDLE) != HAL_OK) {
+        Error_Handler();
+    }
+
+    // Start ADC with interrupts enabled.
+    if (HAL_ADC_Start_IT(&ADC_HANDLE) != HAL_OK) {
+        Error_Handler();
+    }
+}
+
+
+uint32_t init_cargo(void) {   
+    start_adc();
     cargo.emag_en = false;
     cargo.cargo_detected = false;
     return 0;
@@ -45,7 +68,17 @@ uint32_t cargo_main(uint16_t cmd) {
     return ret;
 }
 
+
 void emag_callback(void) {
     // Called when cargo is detected by the current sensor.
     cargo.cargo_detected = true;
+}
+
+
+void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc)
+{
+    if (hadc->Instance != ADC) return;
+
+    // Callback for when the ADC goes outside the window
+    emag_callback();
 }

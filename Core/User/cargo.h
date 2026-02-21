@@ -10,3 +10,4 @@ typedef struct {
 
 uint32_t init_cargo(void);
 uint32_t cargo_main(uint16_t cmd);
+void emag_callback(void);
