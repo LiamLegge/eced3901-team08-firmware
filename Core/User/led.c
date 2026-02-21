@@ -117,6 +117,7 @@ void led_main(void){
     // Simple Sorter
     uint16_t minDistance = 0;
 
+    // State Machine for Back Sensor
     if(state == 0){
         if(distance1 <= 5){ state = 1; }
         minDistance = (distance1 < distance2) ? distance1 : distance2;
