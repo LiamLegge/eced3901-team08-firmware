@@ -2,9 +2,12 @@
 #include "commands.h"
 #include "adc.h"
 #include "logging.h"
+#include "stm32g0xx_hal_gpio.h"
 
 #define ADC_HANDLE hadc1
-#define ADC ADC1
+#define ADC_CH ADC1
+#define EMAG_GPIO_PIN GPIO_PIN_1
+#define EMAG_GPIO_PORT GPIOA
 #define VERBOSE true
 
 extern ADC_HandleTypeDef ADC_HANDLE;
@@ -13,7 +16,10 @@ t_cargoContext cargo = {0};
 
 void start_adc(void) {
     // Calibration (untested)
-    print_log( "[ ADC ] Starting...");
+    if (VERBOSE) {
+        print_log("[ ADC ] Calibrating...");
+    }
+
     if (HAL_ADCEx_Calibration_Start(&ADC_HANDLE) != HAL_OK) {
         Error_Handler();
     }
@@ -41,7 +47,7 @@ bool cargo_detected(void) {
 
 void enable_emag(void) {
     cargo.emag_en = true;
-    // todo: set GPIO pin to enable electromagnet
+    HAL_GPIO_WritePin(EMAG_GPIO_PORT, EMAG_GPIO_PIN, GPIO_PIN_SET);
 }
 
 void disable_emag(void) {
@@ -75,9 +81,8 @@ void emag_callback(void) {
 }
 
 
-void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc)
-{
-    if (hadc->Instance != ADC) return;
+void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc) {
+    if (hadc->Instance != ADC_CH) return;
 
     // Callback for when the ADC goes outside the window
     emag_callback();

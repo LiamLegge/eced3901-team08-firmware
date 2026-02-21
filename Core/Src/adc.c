@@ -149,11 +149,5 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 }
 
 /* USER CODE BEGIN 1 */
-void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc)
-{
-    if (hadc->Instance != ADC1) return;
 
-    // Callback for when the ADC goes outside the window
-    emag_callback();
-}
 /* USER CODE END 1 */
