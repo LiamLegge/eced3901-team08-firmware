@@ -1,9 +1,5 @@
 #pragma once
 
-#include "usart.h"
-
-#define UART_HANDLE huart2
-
 typedef enum
 {
     CMD_NONE = 0,
