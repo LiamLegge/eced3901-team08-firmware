@@ -1,9 +1,38 @@
 #include "cargo.h"
 #include "commands.h"
+#include "adc.h"
+#include "logging.h"
+#include "stm32g0xx_hal_gpio.h"
+
+#define ADC_HANDLE hadc1
+#define ADC_CH ADC1
+#define EMAG_GPIO_PIN GPIO_PIN_1
+#define EMAG_GPIO_PORT GPIOA
+#define VERBOSE true
+
+extern ADC_HandleTypeDef ADC_HANDLE;
 
 t_cargoContext cargo = {0};
 
-uint32_t init_cargo(void) {
+void start_adc(void) {
+    // Calibration (untested)
+    if (VERBOSE) {
+        print_log("[ ADC ] Calibrating...");
+    }
+
+    if (HAL_ADCEx_Calibration_Start(&ADC_HANDLE) != HAL_OK) {
+        Error_Handler();
+    }
+
+    // Start ADC with interrupts enabled.
+    if (HAL_ADC_Start_IT(&ADC_HANDLE) != HAL_OK) {
+        Error_Handler();
+    }
+}
+
+
+uint32_t init_cargo(void) {   
+    start_adc();
     cargo.emag_en = false;
     cargo.cargo_detected = false;
     return 0;
@@ -18,7 +47,7 @@ bool cargo_detected(void) {
 
 void enable_emag(void) {
     cargo.emag_en = true;
-    // todo: set GPIO pin to enable electromagnet
+    HAL_GPIO_WritePin(EMAG_GPIO_PORT, EMAG_GPIO_PIN, GPIO_PIN_SET);
 }
 
 void disable_emag(void) {
@@ -45,7 +74,16 @@ uint32_t cargo_main(uint16_t cmd) {
     return ret;
 }
 
+
 void emag_callback(void) {
     // Called when cargo is detected by the current sensor.
     cargo.cargo_detected = true;
+}
+
+
+void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc) {
+    if (hadc->Instance != ADC_CH) return;
+
+    // Callback for when the ADC goes outside the window
+    emag_callback();
 }
