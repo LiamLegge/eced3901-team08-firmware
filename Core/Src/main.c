@@ -91,9 +91,11 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_TIM1_Init();
-  MX_USART3_UART_Init();
-  MX_USART5_UART_Init();
+  MX_TIM3_Init();
   MX_USART2_UART_Init();
+  MX_USART3_UART_Init();
+  MX_TIM2_Init();
+  MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
   app();
   /* USER CODE END 2 */
