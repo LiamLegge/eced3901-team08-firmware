@@ -26,12 +26,14 @@ void app(void) {
 
     while(1){
         HCSR04_Read(0);
-        delay(60);
+        HAL_Delay(60);
         Distance = Difference * 0.034/2.0;
 
         HCSR04_Read(1);
-        delay(60);
+        HAL_Delay(60);
         Distance1 = Difference * 0.034/2.0;
+
+        HAL_Delay(200);
 
         // State Logics
         if(State == 0){
@@ -44,14 +46,20 @@ void app(void) {
         }
 
         // Change LED Output
-        if(Distance > 0 && Distance <= 61){
-            HAL_GPIO_TogglePin(GPIOA,  GPIO_PIN_4);
+        if(minDistance > 0 && minDistance <= 61){
+            HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_5, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_8, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_9, GPIO_PIN_RESET);
         }
-        else if(Distance > 61 && Distance <= 122){
-            HAL_GPIO_TogglePin(GPIOA,  GPIO_PIN_5);
+        else if(minDistance > 61 && minDistance <= 122){
+            HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_8, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_5, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_9, GPIO_PIN_RESET);
         }
         else{
-            HAL_GPIO_TogglePin(GPIOA,  GPIO_PIN_8);
+            HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_9, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_8, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_5, GPIO_PIN_RESET);
         }
     }
 }
