@@ -88,7 +88,8 @@ void SR04_TIM_IC_Callback(TIM_HandleTypeDef *htim){
 uint16_t init_sr04(void){
     HAL_TIM_Base_Start(&htim3);
     HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
-    uint16_t sr04_present(void);
+    uint16_t vint = sr04_present();
+    return vint;
 }
 // Timeout Disconnected
 uint16_t sr04_present(void){
