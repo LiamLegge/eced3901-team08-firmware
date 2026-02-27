@@ -61,10 +61,10 @@ void app(void)
             cmd = 0x00;
         }
 
-        ros_topic_main();
+        // ros_topic_main();
         led_main();
         sr04_main();
-        cargo_main();
+        // cargo_main();
         
         profile_end();
         HAL_Delay(1);

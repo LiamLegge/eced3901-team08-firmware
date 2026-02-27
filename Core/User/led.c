@@ -43,7 +43,7 @@ void led_default(void){
     ARGB_SetRGB(1, 128, 0,   0);     // Red
     ARGB_SetRGB(2, 128, 128, 128);   // White
     ARGB_SetRGB(3, 0,   128, 0);     // Green
-    ARGB_SetRGB(4, 128, 128, 128);   // White
+    // ARGB_SetRGB(4, 128, 128, 128);   // White
 }
 
 // Turn off all the LEDs for startup
@@ -129,7 +129,8 @@ void led_main(void){
         snprintf(buf, sizeof(buf), "[ LED ] Show:           %d", (int)currentShow);
         print_log(buf);
     }
- 
+    
+
     // Wait for strip to be ready
     while (ARGB_Ready() != ARGB_READY) { }
     switch (currentShow) {
@@ -151,6 +152,7 @@ void led_main(void){
         default:
             break;
     }
+
     ARGB_Show();
     //HAL_Delay(FRAME_DELAY_MS);
     frame++;

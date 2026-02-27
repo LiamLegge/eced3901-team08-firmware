@@ -26,7 +26,7 @@
  * @{
  */
 
-#define WS2811F       ///< Family: {WS2811S, WS2811F, WS2812, SK6812}
+#define WS2812       ///< Family: {WS2811S, WS2811F, WS2812, SK6812}
 // WS2811S — RGB, 400kHz;
 // WS2811F — RGB, 800kHz;
 // WS2812  — GRB, 800kHz;
@@ -34,7 +34,7 @@
 
 #define NUM_PIXELS 5 ///< Pixel quantity
 
-#define USE_GAMMA_CORRECTION 0 ///< Gamma-correction should fix red&green, try for yourself
+#define USE_GAMMA_CORRECTION 1 ///< Gamma-correction should fix red&green, try for yourself
 
 #define TIM_NUM	   1  ///< Timer number
 #define TIM_CH	   TIM_CHANNEL_2  ///< Timer's PWM channel
