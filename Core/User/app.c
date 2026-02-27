@@ -22,8 +22,7 @@ __weak void led_main(void)    {}
 __weak void init_sensor(void) {}
 __weak void sensor_main(void) {}
 
-__weak void init_sr04(void) {}
-__weak void sr04_main(void) {}
+__weak uint16_t init_sr04(void) {}
 
 __weak void init_cargo(void)  {}
 __weak void cargo_main(void)  {}
@@ -37,7 +36,7 @@ void app_init(void)
     init_led();
     init_fsk((uint8_t*)"BYE");
     init_sensor();
-    init_sr04();
+    uint16_t vint = init_sr04();
     init_cargo();
 }
 
@@ -63,7 +62,6 @@ void app(void)
 
         ros_topic_main();
         led_main();
-        sr04_main();
         cargo_main();
         
         profile_end();
