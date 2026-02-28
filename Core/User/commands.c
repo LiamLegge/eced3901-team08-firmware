@@ -4,12 +4,14 @@
 #include <string.h>
 #include"logging.h"
 #include "stdio.h"
+#include "usart.h"
+
 
 #define VERBOSE true
-
 #define RX_DMA_BUF_SIZE 128
 #define CMD_MAX_LEN 64
 
+#define UART_HANDLE huart2
 extern UART_HandleTypeDef UART_HANDLE;
 
 volatile bool rxReady = false;
