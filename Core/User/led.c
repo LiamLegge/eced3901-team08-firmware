@@ -15,7 +15,7 @@ extern DMA_HandleTypeDef hdma_tim1_ch2;
 #define FRAME_DELAY_MS 10 
 #define VERBOSE false
 
-
+uint16_t state = 0;
 uint32_t frame = 0;
 
 // Commands Define
@@ -108,6 +108,22 @@ t_ShowType check_show(uint16_t distance) {
     return currentShow;
 }
 
+uint16_t check_state(uint16_t distance1, uint16_t distance2){
+    uint16_t minDistance = 0;
+
+    // State Machine for Back Sensor
+    if(state == 0){
+        if(distance2 <= 5){ state = 1; }
+        minDistance = (distance1 < distance2) ? distance1 : distance2;
+    }
+    else{
+        if(distance2 > 5){ state = 0; }
+        minDistance = distance1;
+    }
+    
+    return minDistance;
+}
+
 // Switch case to set the light mode
 void led_main(void){
 
@@ -115,9 +131,8 @@ void led_main(void){
     uint16_t distance2 = sr04_read(1);
 
     // Simple Sorter
-    uint16_t minDistance = 0;
-    minDistance = (distance1 < distance2) ? distance1 : distance2;
-
+    uint16_t minDistance = check_state(distance1, distance2);
+    
     t_ShowType currentShow = check_show(minDistance); 
 
     if (VERBOSE) {
