@@ -85,11 +85,19 @@ void SR04_TIM_IC_Callback(TIM_HandleTypeDef *htim){
 }
 
 // Init Sensor
-void init_sr04(void){
+uint16_t init_sr04(void){
     HAL_TIM_Base_Start(&htim3);
     HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
+    uint16_t vint = sr04_present();
+    return vint;
 }
-// Switch case for on and off reading
-void sr04_main(void){
-
+// Timeout Disconnected
+uint16_t sr04_present(void){
+    for(uint16_t i = 0; i < 10; i++){
+        uint16_t timeout = get_distance();
+        if(timeout != 0xFFFF){
+            return 0;
+        }
+    }
+    return 1;
 }
