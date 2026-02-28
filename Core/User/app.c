@@ -22,8 +22,6 @@ __weak void led_main(void)    {}
 __weak void init_sensor(void) {}
 __weak void sensor_main(void) {}
 
-__weak uint16_t init_sr04(void) {}
-
 __weak void init_cargo(void)  {}
 __weak void cargo_main(void)  {}
 
