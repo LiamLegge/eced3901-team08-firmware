@@ -4,13 +4,15 @@
 #include "logging.h"
 #include "stm32g0xx_hal_gpio.h"
 
-#define ADC_HANDLE hadc1
+extern ADC_HandleTypeDef hadc1;
+
 #define ADC_CH ADC1
+#define ADC_HANDLE (&hadc1)
 #define EMAG_GPIO_PIN GPIO_PIN_1
 #define EMAG_GPIO_PORT GPIOA
 #define VERBOSE true
 
-extern ADC_HandleTypeDef ADC_HANDLE;
+
 
 t_cargoContext cargo = {0};
 
@@ -20,12 +22,12 @@ void start_adc(void) {
         print_log("[ ADC ] Calibrating...");
     }
 
-    if (HAL_ADCEx_Calibration_Start(&ADC_HANDLE) != HAL_OK) {
+    if (HAL_ADCEx_Calibration_Start(ADC_HANDLE) != HAL_OK) {
         Error_Handler();
     }
 
     // Start ADC with interrupts enabled.
-    if (HAL_ADC_Start_IT(&ADC_HANDLE) != HAL_OK) {
+    if (HAL_ADC_Start_IT(ADC_HANDLE) != HAL_OK) {
         Error_Handler();
     }
 }
