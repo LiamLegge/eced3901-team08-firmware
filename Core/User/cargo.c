@@ -4,10 +4,13 @@
 #include "logging.h"
 #include "stm32g0xx_hal_def.h"
 #include "stm32g0xx_hal_gpio.h"
+#include <stdint.h>
 
 extern ADC_HandleTypeDef hadc1;
 
 #define VERBOSE true
+#define WINDOW_VERBOSE false
+#define VOLTAGE_VERBOSE false
 
 #define ADC_CH ADC1
 #define ADC_HANDLE (&hadc1)
@@ -27,6 +30,25 @@ long map(long x, long in_min, long in_max, long out_min, long out_max)
 
 uint16_t get_adc_value(void) { 
     return adc_value;
+}
+
+// Check if value is outside the window defined by low and high
+// Returns true if value is outside the window, false if inside
+bool window(uint16_t value, uint16_t low, uint16_t high) {
+    if (value < low) {
+        if (WINDOW_VERBOSE) {
+            print_log("[CARGO] Value %u is below low threshold %u", value, low);
+        }
+    } else if (value > high) {
+        if (WINDOW_VERBOSE) {
+            print_log("[CARGO] Value %u is above high threshold %u", value, high);
+        }
+    } else {
+        if (WINDOW_VERBOSE) {
+            print_log("[CARGO] Value %u is within thresholds (%u - %u)", value, low, high);
+        }
+    }
+    return (value < low || value > high);
 }
 
 void print_adc_value(void) {
@@ -74,7 +96,6 @@ void start_adc(void) {
 
 }
 
-
 uint32_t init_cargo(void) {   
     start_adc();
     cargo.emag_en = false;
@@ -92,11 +113,17 @@ bool cargo_detected(void) {
 void enable_emag(void) {
     cargo.emag_en = true;
     HAL_GPIO_WritePin(EMAG_GPIO_PORT, EMAG_GPIO_PIN, GPIO_PIN_SET);
+    if (VERBOSE) {
+        print_log("[CARGO] Electromagnet enabled");
+    }
 }
 
 void disable_emag(void) {
     cargo.emag_en = false;
-    // todo: set GPIO pin to disable electromagnet
+    HAL_GPIO_WritePin(EMAG_GPIO_PORT, EMAG_GPIO_PIN, GPIO_PIN_RESET);
+    if (VERBOSE) {
+        print_log("[CARGO] Electromagnet disabled");
+    }
 }
 
 void toggle_emag(void) {
@@ -105,10 +132,42 @@ void toggle_emag(void) {
     } else {
         enable_emag();
     }
+    if (VERBOSE) {
+        print_log("[CARGO] Electromagnet toggled to %s", cargo.emag_en ? "ON" : "OFF");
+    }
+}
+
+bool is_cargo_detected(uint16_t emag_voltage)
+{
+    const uint16_t LOW_THRESHOLD  = 652;
+    const uint16_t HIGH_THRESHOLD = 960;
+
+    bool was_detected = cargo.cargo_detected;
+
+    // Decide new state
+    bool now_detected = window(emag_voltage, LOW_THRESHOLD, HIGH_THRESHOLD);
+    if (now_detected != was_detected) {
+        cargo.cargo_detected = now_detected;
+
+        // Print only on transition
+        if (now_detected) {
+            print_log("[CARGO] LEFT window (v=%u, win=[%u..%u])",
+                    (unsigned)emag_voltage,
+                    (unsigned)LOW_THRESHOLD,
+                    (unsigned)HIGH_THRESHOLD);
+        } else {
+            print_log("[CARGO] ENTERED window (v=%u, win=[%u..%u])",
+                    (unsigned)emag_voltage,
+                    (unsigned)LOW_THRESHOLD,
+                    (unsigned)HIGH_THRESHOLD);
+        }
+    }
+
+    return cargo.cargo_detected;
 }
 
 uint32_t cargo_main(uint16_t cmd) {
-    uint32_t ret = 0x00; 
+    // Cargo system commands
     switch (cmd) {
         case CMD_EMAG_ENABLE: enable_emag(); break;
         case CMD_EMAG_DISABLE: disable_emag(); break;
@@ -116,16 +175,14 @@ uint32_t cargo_main(uint16_t cmd) {
         default: break;
     }
 
+    // Check cargo status based on ADC value
+    // A current shunt is used to measure the current through the electromagnet,
+    // which correlates to the voltage measured by the ADC. When cargo is present,
+    // the current will *briefly* spike as when the magnet attaches to the cargo.    
     uint16_t emag_voltage = get_adc_value();
-    if (VERBOSE) { 
-        print_log("[CARGO] EMAG voltage: %u", emag_voltage);
-    }
-
-    return ret;
+    bool detected = is_cargo_detected(emag_voltage); // Only triggers on transitions
+    return (uint32_t)detected;
 }
-
-
-
 
 void emag_callback(void) {
     // Called when cargo is detected by the current sensor.
