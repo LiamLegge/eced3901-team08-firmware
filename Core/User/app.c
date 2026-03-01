@@ -39,19 +39,26 @@ void app_init(void)
     init_cargo();
 }
 
+void print_status_update(uint32_t time_ms) {
+    const uint32_t log_interval_ms = 1000;
+    if (time_ms % log_interval_ms == 0) {
+        print_log("[ APP ] Time: %lu ms", time_ms);
+        print_adc_value();
+    }
+}
 
 // Application main loop    
 void app(void)
 {
     app_init();
-    print_log("[ LOG ] === SYSTEM START ===");
+    print_log("[ APP ] === SYSTEM START ===");
 
     char cmd = '0';
-
+    uint32_t time_ms = 0;
     for (;;)
     {
         profile_begin();
-
+        time_ms = HAL_GetTick();
         cmd = command_main();
 
         if (cmd == 0x01) {
@@ -63,7 +70,8 @@ void app(void)
         led_main();
         sr04_main();
         cargo_main(cmd);
-        
+        print_status_update(time_ms);
+
         profile_end();
         HAL_Delay(1);
     }
