@@ -115,6 +115,12 @@ uint32_t cargo_main(uint16_t cmd) {
         case CMD_EMAG_TOGGLE: toggle_emag(); break;
         default: break;
     }
+
+    uint16_t emag_voltage = get_adc_value();
+    if (VERBOSE) { 
+        print_log("[CARGO] EMAG voltage: %u", emag_voltage);
+    }
+
     return ret;
 }
 
@@ -128,7 +134,7 @@ void emag_callback(void) {
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
     if (hadc != ADC_HANDLE) return;
-    adc_value = map(adc_buffer[0], 0, 1024, 0, 100); // Map to percentage
+    adc_value = adc_buffer[0];
 }
 
 void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc) {
