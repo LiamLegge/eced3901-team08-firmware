@@ -40,8 +40,14 @@ void app_init(void)
 }
 
 void print_status_update(uint32_t time_ms) {
-    const uint32_t log_interval_ms = 1000;
-    if (time_ms % log_interval_ms == 0) {
+    const uint32_t log_interval_ms = 250;
+    static uint32_t last_log_time = 0;
+
+    if ((time_ms - last_log_time) >= log_interval_ms) {
+        last_log_time = time_ms;
+
+        // Print log message with a timestamp 
+        print_log("-----------------------------");
         print_log("[ APP ] Time: %lu ms", time_ms);
         print_adc_value();
     }
@@ -70,9 +76,9 @@ void app(void)
         led_main();
         sr04_main();
         cargo_main(cmd);
-        print_status_update(time_ms);
-
-        profile_end();
+        
         HAL_Delay(1);
+        print_status_update(time_ms);
+        profile_end();
     }
 }
