@@ -13,4 +13,5 @@ typedef struct {
 uint32_t init_cargo(void);
 uint32_t cargo_main(uint16_t cmd);
 void emag_callback(void);
-
+uint32_t get_adc_value(void);
+void print_adc_value(void);

@@ -12,9 +12,18 @@ extern ADC_HandleTypeDef hadc1;
 #define EMAG_GPIO_PORT GPIOA
 #define VERBOSE true
 
-
-
 t_cargoContext cargo = {0};
+uint32_t adc_buffer[1] = {0}; // Buffer for ADC readings, size 1 for single channel
+
+uint32_t get_adc_value(void) { 
+    return adc_buffer[0];
+}
+
+void print_adc_value(void) {
+    if (VERBOSE) {
+        print_log("[ ADC ] Current value: %lu", get_adc_value());
+    }
+}
 
 void start_adc(void) {
     // Calibration (untested)
@@ -77,11 +86,18 @@ uint32_t cargo_main(uint16_t cmd) {
 }
 
 
+
+
 void emag_callback(void) {
     // Called when cargo is detected by the current sensor.
     cargo.cargo_detected = true;
 }
 
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
+    if (hadc != ADC_HANDLE) return;
+    uint32_t adc = HAL_ADC_GetValue(hadc);
+    adc_buffer[0] = adc;
+}
 
 void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc) {
     if (hadc->Instance != ADC_CH) return;
