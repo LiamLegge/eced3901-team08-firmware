@@ -11,7 +11,7 @@
 #define RX_DMA_BUF_SIZE 128
 #define CMD_MAX_LEN 64
 
-#define UART_HANDLE huart2
+#define UART_HANDLE huart3
 extern UART_HandleTypeDef UART_HANDLE;
 
 volatile bool rxReady = false;
