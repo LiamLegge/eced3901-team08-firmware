@@ -66,7 +66,7 @@ void show_dangerhig(void) {
 }
 
 // Display oscillating on distance LED
-void show_collected() {
+void show_collected(void) {
     uint16_t t = (uint16_t)(HAL_GetTick()/10);
     led_default();
 
@@ -167,11 +167,10 @@ void led_main(void){
             show_dangerhig();
             break;
         case SHOW_COLLECTED:
-            show_collected(frame);
+            show_collected();
             break;
         default:
             break;
     }
     ARGB_Show();
-    frame++;
 }
