@@ -136,8 +136,14 @@ void led_main(void){
 
     // Simple Sorter
     uint16_t minDistance = (distance1 < distance2) ? distance1 : distance2;
+    t_ShowType currentShow = check_show(minDistance, distance1);
     
-    t_ShowType currentShow = check_show(minDistance, distance1); 
+    // Serial Send
+    uint16_t last_time = 0;
+    if(HAL_GetTick() - last_time >= 1000){
+        last_time = HAL_GetTick();
+        print_log("[TOPIC] minDistance: %u", minDistance);
+    }
 
     if (VERBOSE) {
         char buf[64];
