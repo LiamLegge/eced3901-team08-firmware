@@ -12,11 +12,7 @@ extern TIM_HandleTypeDef htim2;
 extern DMA_HandleTypeDef hdma_tim1_ch2;
 
 // Global Defines
-#define FRAME_DELAY_MS 10 
 #define VERBOSE false
-
-uint32_t frame = 0;
-
 // Commands Define
 typedef enum {
     SHOW_OFF = 0,
@@ -70,8 +66,8 @@ void show_dangerhig(void) {
 }
 
 // Display oscillating on distance LED
-void show_collected(uint32_t frame) {
-    uint16_t t = (float)frame;
+void show_collected() {
+    uint16_t t = (uint16_t)(HAL_GetTick()/10);
     led_default();
 
     uint8_t hue = 35; // Gold
@@ -91,7 +87,7 @@ void init_led(void) {
 }
 
 t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
-    #define SHOW_DEBOUNCE_THRESHOLD 3
+    #define SHOW_DEBOUNCE_THRESHOLD 4
     static t_ShowType lastCandidateShow = SHOW_OFF;
     static int debounceCounter = 0;
     static t_ShowType debouncedShow = SHOW_OFF;
@@ -136,17 +132,23 @@ void led_main(void){
 
     // Simple Sorter
     uint16_t minDistance = (distance1 < distance2) ? distance1 : distance2;
-    
+    // Show Sorter
     t_ShowType currentShow = check_show(minDistance, distance1); 
 
+
+    // Heartbeat Debugging
     if (VERBOSE) {
-        char buf[64];
-        snprintf(buf, sizeof(buf), "[ LED ] Dist1: (cm):   %lu", (unsigned long)distance1);
-        print_log(buf);
-        snprintf(buf, sizeof(buf), "[ LED ] Dist2: (cm):   %lu", (unsigned long)distance2);
-        print_log(buf);
-        snprintf(buf, sizeof(buf), "[ LED ] Show:           %d", (int)currentShow);
-        print_log(buf);
+        static uint32_t last_time = 0;
+
+        if (HAL_GetTick() - last_time >= 1000)
+        {
+            last_time = HAL_GetTick();
+            char buf[64];
+            snprintf(buf, sizeof(buf), "[TOPIC] Distance1: (cm):   %lu", (unsigned long)distance1);
+            print_log(buf);
+            snprintf(buf, sizeof(buf), "[TOPIC] Distance2: (cm):   %lu", (unsigned long)distance2);
+            print_log(buf);
+        }
     }
  
     // Wait for strip to be ready
@@ -171,6 +173,5 @@ void led_main(void){
             break;
     }
     ARGB_Show();
-    //HAL_Delay(FRAME_DELAY_MS);
     frame++;
 }
