@@ -75,7 +75,6 @@ void app(void)
 
         ros_topic_main();
         led_main();
-        sr04_main();
         cargo_main(cmd);
         
         HAL_Delay(1);
