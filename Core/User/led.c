@@ -91,19 +91,40 @@ void init_led(void) {
 }
 
 t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
-    currentShow = 0;
+    #define SHOW_DEBOUNCE_THRESHOLD 3
+    static t_ShowType lastCandidateShow = SHOW_OFF;
+    static int debounceCounter = 0;
+    static t_ShowType debouncedShow = SHOW_OFF;
+
+    t_ShowType candidateShow = SHOW_OFF;
     if(distance1 > 0 && distance1 <= 5){
-        currentShow = SHOW_COLLECTED;
+        candidateShow = SHOW_COLLECTED;
     }
     else if(minDistance > 0 && minDistance <= 61){
-        currentShow = SHOW_DANGERHIG;
+        candidateShow = SHOW_DANGERHIG;
     }
     else if(minDistance > 61 && minDistance <= 122){
-        currentShow = SHOW_DANGERMED;
+        candidateShow = SHOW_DANGERMED;
     }
     else{
-        currentShow = SHOW_DANGERLOW;
+        candidateShow = SHOW_DANGERLOW;
     }
+
+    // Debouncing Error Correction
+    if (candidateShow == lastCandidateShow) {
+        if (debounceCounter < SHOW_DEBOUNCE_THRESHOLD) {
+            debounceCounter++;
+        }
+    } else {
+        debounceCounter = 1;
+        lastCandidateShow = candidateShow;
+    }
+
+    if (debounceCounter >= SHOW_DEBOUNCE_THRESHOLD) {
+        debouncedShow = candidateShow;
+    }
+
+    currentShow = debouncedShow;
     return currentShow;
 }
 
