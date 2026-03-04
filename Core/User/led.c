@@ -15,7 +15,6 @@ extern DMA_HandleTypeDef hdma_tim1_ch2;
 #define FRAME_DELAY_MS 10 
 #define VERBOSE false
 
-uint16_t state = 0;
 uint32_t frame = 0;
 
 // Commands Define
@@ -91,37 +90,21 @@ void init_led(void) {
     ARGB_Show();
 }
 
-t_ShowType check_show(uint16_t distance) {
+t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
     currentShow = 0;
-    if(distance > 0 && distance <= 5){
+    if(distance1 > 0 && distance1 <= 5){
         currentShow = SHOW_COLLECTED;
     }
-    else if(distance > 5 && distance <= 61){
+    else if(minDistance > 0 && minDistance <= 61){
         currentShow = SHOW_DANGERHIG;
     }
-    else if(distance > 61 && distance <= 122){
+    else if(minDistance > 61 && minDistance <= 122){
         currentShow = SHOW_DANGERMED;
     }
     else{
         currentShow = SHOW_DANGERLOW;
     }
     return currentShow;
-}
-
-uint16_t check_state(uint16_t distance1, uint16_t distance2){
-    uint16_t minDistance = 0;
-
-    // State Machine for Back Sensor
-    if(state == 0){
-        if(distance2 <= 5){ state = 1; }
-        minDistance = (distance1 < distance2) ? distance1 : distance2;
-    }
-    else{
-        if(distance2 > 5){ state = 0; }
-        minDistance = distance1;
-    }
-    
-    return minDistance;
 }
 
 // Switch case to set the light mode
@@ -131,9 +114,9 @@ void led_main(void){
     uint16_t distance2 = sr04_read(1);
 
     // Simple Sorter
-    uint16_t minDistance = check_state(distance1, distance2);
+    uint16_t minDistance = (distance1 < distance2) ? distance1 : distance2;
     
-    t_ShowType currentShow = check_show(minDistance); 
+    t_ShowType currentShow = check_show(minDistance, distance1); 
 
     if (VERBOSE) {
         char buf[64];
