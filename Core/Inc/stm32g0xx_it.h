@@ -53,12 +53,14 @@ void PendSV_Handler(void);
 void SysTick_Handler(void);
 void DMA1_Channel1_IRQHandler(void);
 void DMA1_Channel2_3_IRQHandler(void);
+void DMA1_Ch4_7_DMA2_Ch1_5_DMAMUX1_OVR_IRQHandler(void);
 void TIM1_BRK_UP_TRG_COM_IRQHandler(void);
 void TIM1_CC_IRQHandler(void);
 void TIM2_IRQHandler(void);
 void TIM3_TIM4_IRQHandler(void);
 void TIM15_IRQHandler(void);
 void USART2_LPUART2_IRQHandler(void);
+void USART3_4_5_6_LPUART1_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

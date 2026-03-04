@@ -31,10 +31,12 @@ volatile uint8_t *rx_get_buffer(void) {
 
 static void start_rx_to_idle_dma(void)
 {
-    // Start a DMA reception that completes on IDLE or buffer full
-    HAL_UARTEx_ReceiveToIdle_DMA(&UART_HANDLE, rxBuffer, RX_DMA_BUF_SIZE);
+    print_log("[ CMD ] hdmarx=%p", UART_HANDLE.hdmarx);
 
-    // Optional: disable Half Transfer IRQ to reduce interrupt spam
+    HAL_StatusTypeDef st = HAL_UARTEx_ReceiveToIdle_DMA(&UART_HANDLE, (uint8_t*)rxBuffer, RX_DMA_BUF_SIZE);
+
+    print_log("[ CMD ] ReceiveToIdle_DMA st=%d", (int)st);
+
     if (UART_HANDLE.hdmarx) {
         __HAL_DMA_DISABLE_IT(UART_HANDLE.hdmarx, DMA_IT_HT);
     }
