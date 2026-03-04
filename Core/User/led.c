@@ -110,6 +110,7 @@ t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
         candidateShow = SHOW_DANGERLOW;
     }
 
+    // Debouncing Error Correction
     if (candidateShow == lastCandidateShow) {
         if (debounceCounter < SHOW_DEBOUNCE_THRESHOLD) {
             debounceCounter++;
