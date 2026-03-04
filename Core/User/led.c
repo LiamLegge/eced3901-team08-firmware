@@ -141,8 +141,13 @@ void led_main(void){
     // Serial Send
     uint16_t last_time = 0;
     if(HAL_GetTick() - last_time >= 1000){
+        char buf[64];
         last_time = HAL_GetTick();
-        print_log("[TOPIC] minDistance: %u", minDistance);
+        snprintf(buf, sizeof(buf), "[TOPIC] Dist1: (cm):   %lu", (unsigned long)distance1);
+        print_log(buf);
+        snprintf(buf, sizeof(buf), "[TOPIC] Dist2: (cm):   %lu", (unsigned long)distance2);
+        print_log(buf);
+        
     }
 
     if (VERBOSE) {
