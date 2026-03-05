@@ -12,7 +12,7 @@ extern TIM_HandleTypeDef htim2;
 extern DMA_HandleTypeDef hdma_tim1_ch2;
 
 // Global Defines
-#define VERBOSE false
+#define VERBOSE true
 // Commands Define
 typedef enum {
     SHOW_OFF = 0,
@@ -87,7 +87,7 @@ void init_led(void) {
 }
 
 t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
-    #define SHOW_DEBOUNCE_THRESHOLD 4
+    #define SHOW_DEBOUNCE_THRESHOLD 3
     static t_ShowType lastCandidateShow = SHOW_OFF;
     static int debounceCounter = 0;
     static t_ShowType debouncedShow = SHOW_OFF;
@@ -96,10 +96,10 @@ t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
     if(distance1 > 0 && distance1 <= 5){
         candidateShow = SHOW_COLLECTED;
     }
-    else if(minDistance > 0 && minDistance <= 61){
+    else if(minDistance > 0 && minDistance <= 55){
         candidateShow = SHOW_DANGERHIG;
     }
-    else if(minDistance > 61 && minDistance <= 122){
+    else if(minDistance > 55 && minDistance <= 110){
         candidateShow = SHOW_DANGERMED;
     }
     else{
@@ -128,6 +128,7 @@ t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
 void led_main(void){
 
     uint16_t distance1 = sr04_read(0);
+    HAL_Delay(60);
     uint16_t distance2 = sr04_read(1);
 
     // Simple Sorter
