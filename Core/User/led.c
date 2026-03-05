@@ -97,10 +97,10 @@ t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
     if(distance1 > 0 && distance1 <= 5){
         candidateShow = SHOW_COLLECTED;
     }
-    else if(minDistance > 0 && minDistance <= 61){
+    else if(minDistance > 0 && minDistance <= 55){
         candidateShow = SHOW_DANGERHIG;
     }
-    else if(minDistance > 61 && minDistance <= 122){
+    else if(minDistance > 55 && minDistance <= 110){
         candidateShow = SHOW_DANGERMED;
     }
     else{
