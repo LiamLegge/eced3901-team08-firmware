@@ -51,18 +51,21 @@ void show_off (void){
 void show_dangerlow(void){
     led_default();
     ARGB_SetRGB(0, 0, 255, 0);
+    //ARGB_SetRGB(0, 60, 60, 255);
 }
 // Display med danger on the distance LED
 void show_dangermed(void){
 
     led_default();
     ARGB_SetRGB(0, 255, 255, 0);
+    //ARGB_SetRGB(0, 0, 0, 255);
 }
 
 // Display high danger on the distance LED
 void show_dangerhig(void) {
     led_default();
     ARGB_SetRGB(0, 255, 0, 0);
+    //ARGB_SetRGB(0, 128, 0, 128);
 }
 
 // Display oscillating on distance LED
@@ -87,40 +90,43 @@ void init_led(void) {
 }
 
 t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
-    #define SHOW_DEBOUNCE_THRESHOLD 3
-    static t_ShowType lastCandidateShow = SHOW_OFF;
-    static int debounceCounter = 0;
-    static t_ShowType debouncedShow = SHOW_OFF;
+    #define AVG_WINDOW_SIZE 5
+    static uint16_t minDistanceBuffer[AVG_WINDOW_SIZE] = {0};
+    static uint16_t distance1Buffer[AVG_WINDOW_SIZE] = {0};
+    static int bufferIndex = 0;
+    static int bufferCount = 0;
+
+    // Update buffers
+    minDistanceBuffer[bufferIndex] = minDistance;
+    distance1Buffer[bufferIndex] = distance1;
+    bufferIndex = (bufferIndex + 1) % AVG_WINDOW_SIZE;
+    if (bufferCount < AVG_WINDOW_SIZE) bufferCount++;
+
+    // Calculate averages
+    uint32_t minDistanceSum = 0;
+    uint32_t distance1Sum = 0;
+    for (int i = 0; i < bufferCount; ++i) {
+        minDistanceSum += minDistanceBuffer[i];
+        distance1Sum += distance1Buffer[i];
+    }
+    uint16_t minDistanceAvg = (bufferCount > 0) ? (uint16_t)(minDistanceSum / bufferCount) : 0;
+    uint16_t distance1Avg = (bufferCount > 0) ? (uint16_t)(distance1Sum / bufferCount) : 0;
 
     t_ShowType candidateShow = SHOW_OFF;
-    if(distance1 > 0 && distance1 <= 5){
+    if(distance1Avg > 0 && distance1Avg <= 5){
         candidateShow = SHOW_COLLECTED;
     }
-    else if(minDistance > 0 && minDistance <= 55){
+    else if(minDistanceAvg > 0 && minDistanceAvg <= 55){
         candidateShow = SHOW_DANGERHIG;
     }
-    else if(minDistance > 55 && minDistance <= 110){
+    else if(minDistanceAvg > 55 && minDistanceAvg <= 100){
         candidateShow = SHOW_DANGERMED;
     }
     else{
         candidateShow = SHOW_DANGERLOW;
     }
 
-    // Debouncing Error Correction
-    if (candidateShow == lastCandidateShow) {
-        if (debounceCounter < SHOW_DEBOUNCE_THRESHOLD) {
-            debounceCounter++;
-        }
-    } else {
-        debounceCounter = 1;
-        lastCandidateShow = candidateShow;
-    }
-
-    if (debounceCounter >= SHOW_DEBOUNCE_THRESHOLD) {
-        debouncedShow = candidateShow;
-    }
-
-    currentShow = debouncedShow;
+    currentShow = candidateShow;
     return currentShow;
 }
 

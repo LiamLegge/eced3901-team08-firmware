@@ -27,11 +27,11 @@ __weak void cargo_main(void)  {}
 void app_init(void)
 {
     init_logging(&huart2);
-    init_commands();
+    //init_commands();
     init_led();
-    init_fsk((uint8_t*)"BYE");
+    //init_fsk((uint8_t*)"BYE");
     uint16_t vint = init_sr04();
-    init_cargo();
+    //init_cargo();
 }
 
 
@@ -41,22 +41,22 @@ void app(void)
     app_init();
     print_log("[ LOG ] === SYSTEM START ===");
 
-    char cmd = '0';
+    //char cmd = '0';
 
     for (;;)
     {
         profile_begin();
-
+        /*
         cmd = command_main();
 
         if (cmd == 0x01) {
             fsk_main(0x01);
             cmd = 0x00;
         }
-
+        */
         ros_topic_main();
         led_main();
-        cargo_main();
+        //cargo_main();
         
         profile_end();
         HAL_Delay(1);
