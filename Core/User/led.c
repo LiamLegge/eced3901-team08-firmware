@@ -12,10 +12,7 @@ extern TIM_HandleTypeDef htim2;
 extern DMA_HandleTypeDef hdma_tim1_ch2;
 
 // Global Defines
-#define FRAME_DELAY_MS 10 
 #define VERBOSE false
-
-uint32_t frame = 0;
 
 // Commands Define
 typedef enum {
@@ -70,8 +67,8 @@ void show_dangerhig(void) {
 }
 
 // Display oscillating on distance LED
-void show_collected(uint32_t frame) {
-    uint16_t t = (float)frame;
+void show_collected(void) {
+    uint16_t t = (uint16_t)(HAL_GetTick()/10);
     led_default();
 
     uint8_t hue = 35; // Gold
@@ -165,12 +162,10 @@ void led_main(void){
             show_dangerhig();
             break;
         case SHOW_COLLECTED:
-            show_collected(frame);
+            show_collected();
             break;
         default:
             break;
     }
     ARGB_Show();
-    //HAL_Delay(FRAME_DELAY_MS);
-    frame++;
 }
