@@ -15,7 +15,7 @@
 #include <stdint.h>
 
 // Handles
-extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart3;
 
 __weak void init_led(void)    {}
 __weak void led_main(void)    {}
@@ -30,7 +30,7 @@ __weak void sr04_main(void) {}
 // Subsystem startup functions
 void app_init(void)
 {
-    init_logging(&huart2);
+    init_logging(&huart3);
     init_commands();
     init_led();
     init_fsk((uint8_t*)"BYE");
@@ -50,6 +50,7 @@ void print_status_update(uint32_t time_ms) {
         print_log("-----------------------------");
         print_log("[ APP ] Time: %lu ms", time_ms);
         print_adc_value();
+        HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
     }
 }
 
@@ -74,7 +75,6 @@ void app(void)
 
         ros_topic_main();
         led_main();
-        sr04_main();
         cargo_main(cmd);
         
         HAL_Delay(1);

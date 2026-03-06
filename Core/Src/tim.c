@@ -75,7 +75,7 @@ void MX_TIM1_Init(void)
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
   sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;
   sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
@@ -232,7 +232,7 @@ void MX_TIM15_Init(void)
   htim15.Instance = TIM15;
   htim15.Init.Prescaler = 64000-1;
   htim15.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim15.Init.Period = 10-1;
+  htim15.Init.Period = 9-1;
   htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim15.Init.RepetitionCounter = 0;
   htim15.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
