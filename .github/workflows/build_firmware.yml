@@ -1,0 +1,29 @@
+# This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
+name: Build Firmware
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install ARM Toolchain
+        run: |
+          sudo apt update
+          sudo apt install -y gcc-arm-none-eabi binutils-arm-none-eabi cmake ninja-build
+
+      - name: Configure CMake
+        run: cmake --preset Release
+
+      - name: Build project
+        run: cmake --build --preset Release
+
+      - name: Firmware info
+        run: arm-none-eabi-size build/Release/*.elf
