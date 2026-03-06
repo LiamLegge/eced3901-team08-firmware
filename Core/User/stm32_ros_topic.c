@@ -4,13 +4,16 @@
 #include "logging.h"
 
 
+
 void ros_topic_main(void) {
     // Simple heartbeat
+    
     static uint32_t last_time = 0;
 
-    if (HAL_GetTick() - last_time >= HEARTBEAT_INTERVAL_MS)
+    if (HAL_GetTick() - last_time >= 1000)
     {
         last_time = HAL_GetTick();
-        print_log("[TOPIC] heartbeat time: %u", last_time);
+        print_log("[TOPIC] heartbeat");
+        print_log("[TOPIC] time: %u", last_time);
     }
 }

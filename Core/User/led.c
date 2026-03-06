@@ -12,11 +12,7 @@ extern TIM_HandleTypeDef htim2;
 extern DMA_HandleTypeDef hdma_tim1_ch2;
 
 // Global Defines
-#define FRAME_DELAY_MS 10 
-#define VERBOSE true
-
-
-uint32_t frame = 0;
+#define VERBOSE false
 
 // Commands Define
 typedef enum {
@@ -71,8 +67,8 @@ void show_dangerhig(void) {
 }
 
 // Display oscillating on distance LED
-void show_collected(uint32_t frame) {
-    uint16_t t = (float)frame;
+void show_collected(void) {
+    uint16_t t = (uint16_t)(HAL_GetTick()/10);
     led_default();
 
     uint8_t hue = 35; // Gold
@@ -86,25 +82,49 @@ void show_collected(uint32_t frame) {
 void init_led(void) {
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn); // Enable the interrupt for the timer
     ARGB_Init();  // Initialization
-    ARGB_SetBrightness(128); // Set a moderate global brightness (0-255)
+    ARGB_SetBrightness(5); // Set a moderate global brightness (0-255)
     ARGB_Clear();
     ARGB_Show();
 }
 
-t_ShowType check_show(uint16_t distance) {
-    currentShow = 0;
-    if(distance > 0 && distance <= 5){
-        currentShow = SHOW_COLLECTED;
+t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
+    #define AVG_WINDOW_SIZE 5
+    static uint16_t minDistanceBuffer[AVG_WINDOW_SIZE] = {0};
+    static uint16_t distance1Buffer[AVG_WINDOW_SIZE] = {0};
+    static int bufferIndex = 0;
+    static int bufferCount = 0;
+
+    // Update buffers
+    minDistanceBuffer[bufferIndex] = minDistance;
+    distance1Buffer[bufferIndex] = distance1;
+    bufferIndex = (bufferIndex + 1) % AVG_WINDOW_SIZE;
+    if (bufferCount < AVG_WINDOW_SIZE) bufferCount++;
+
+    // Calculate averages
+    uint32_t minDistanceSum = 0;
+    uint32_t distance1Sum = 0;
+    for (int i = 0; i < bufferCount; ++i) {
+        minDistanceSum += minDistanceBuffer[i];
+        distance1Sum += distance1Buffer[i];
     }
-    else if(distance > 5 && distance <= 61){
-        currentShow = SHOW_DANGERHIG;
+    uint16_t minDistanceAvg = (bufferCount > 0) ? (uint16_t)(minDistanceSum / bufferCount) : 0;
+    uint16_t distance1Avg = (bufferCount > 0) ? (uint16_t)(distance1Sum / bufferCount) : 0;
+
+    t_ShowType candidateShow = SHOW_OFF;
+    if(distance1Avg > 0 && distance1Avg <= 5){
+        candidateShow = SHOW_COLLECTED;
     }
-    else if(distance > 61 && distance <= 122){
-        currentShow = SHOW_DANGERMED;
+    else if(minDistanceAvg > 0 && minDistanceAvg <= 62){
+        candidateShow = SHOW_DANGERHIG;
+    }
+    else if(minDistanceAvg > 62 && minDistanceAvg <= 122){
+        candidateShow = SHOW_DANGERMED;
     }
     else{
-        currentShow = SHOW_DANGERLOW;
+        candidateShow = SHOW_DANGERLOW;
     }
+
+    currentShow = candidateShow;
     return currentShow;
 }
 
@@ -115,10 +135,9 @@ void led_main(void){
     uint16_t distance2 = sr04_read(1);
 
     // Simple Sorter
-    uint16_t minDistance = 0;
-    minDistance = (distance1 < distance2) ? distance1 : distance2;
-
-    t_ShowType currentShow = check_show(minDistance); 
+    uint16_t minDistance = (distance1 < distance2) ? distance1 : distance2;
+    
+    t_ShowType currentShow = check_show(minDistance, distance1); 
 
     if (VERBOSE) {
         char buf[64];
@@ -146,12 +165,10 @@ void led_main(void){
             show_dangerhig();
             break;
         case SHOW_COLLECTED:
-            show_collected(frame);
+            show_collected();
             break;
         default:
             break;
     }
     ARGB_Show();
-    //HAL_Delay(FRAME_DELAY_MS);
-    frame++;
 }
