@@ -84,7 +84,7 @@ void show_collected(void) {
 void init_led(void) {
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn); // Enable the interrupt for the timer
     ARGB_Init();  // Initialization
-    ARGB_SetBrightness(128); // Set a moderate global brightness (0-255)
+    ARGB_SetBrightness(5); // Set a moderate global brightness (0-255)
     ARGB_Clear();
     ARGB_Show();
 }
@@ -116,10 +116,10 @@ t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
     if(distance1Avg > 0 && distance1Avg <= 5){
         candidateShow = SHOW_COLLECTED;
     }
-    else if(minDistanceAvg > 0 && minDistanceAvg <= 55){
+    else if(minDistanceAvg > 0 && minDistanceAvg <= 62){
         candidateShow = SHOW_DANGERHIG;
     }
-    else if(minDistanceAvg > 55 && minDistanceAvg <= 100){
+    else if(minDistanceAvg > 62 && minDistanceAvg <= 122){
         candidateShow = SHOW_DANGERMED;
     }
     else{
@@ -136,6 +136,7 @@ void led_main(void){
     uint16_t distance1 = sr04_read(0);
     HAL_Delay(60);
     uint16_t distance2 = sr04_read(1);
+    HAL_Delay(60);
 
     // Simple Sorter
     uint16_t minDistance = (distance1 < distance2) ? distance1 : distance2;
