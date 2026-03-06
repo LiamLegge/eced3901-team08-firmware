@@ -82,7 +82,7 @@ void show_collected(void) {
 void init_led(void) {
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn); // Enable the interrupt for the timer
     ARGB_Init();  // Initialization
-    ARGB_SetBrightness(128); // Set a moderate global brightness (0-255)
+    ARGB_SetBrightness(5); // Set a moderate global brightness (0-255)
     ARGB_Clear();
     ARGB_Show();
 }
