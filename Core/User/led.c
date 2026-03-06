@@ -114,10 +114,10 @@ t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
     if(distance1Avg > 0 && distance1Avg <= 5){
         candidateShow = SHOW_COLLECTED;
     }
-    else if(minDistanceAvg > 0 && minDistanceAvg <= 55){
+    else if(minDistanceAvg > 0 && minDistanceAvg <= 62){
         candidateShow = SHOW_DANGERHIG;
     }
-    else if(minDistanceAvg > 55 && minDistanceAvg <= 100){
+    else if(minDistanceAvg > 62 && minDistanceAvg <= 122){
         candidateShow = SHOW_DANGERMED;
     }
     else{
