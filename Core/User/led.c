@@ -136,17 +136,18 @@ void led_main(void){
 
     // Simple Sorter
     uint16_t minDistance = (distance1 < distance2) ? distance1 : distance2;
+    t_ShowType currentShow = check_show(minDistance, distance1);
     
-    t_ShowType currentShow = check_show(minDistance, distance1); 
-
-    if (VERBOSE) {
+    // Serial Send
+    uint16_t last_time = 0;
+    if(HAL_GetTick() - last_time >= 1000){
         char buf[64];
-        snprintf(buf, sizeof(buf), "[ LED ] Dist1: (cm):   %lu", (unsigned long)distance1);
+        last_time = HAL_GetTick();
+        snprintf(buf, sizeof(buf), "[TOPIC] Dist1:   %lu\n", (unsigned long)distance1);
         print_log(buf);
-        snprintf(buf, sizeof(buf), "[ LED ] Dist2: (cm):   %lu", (unsigned long)distance2);
+        snprintf(buf, sizeof(buf), "[TOPIC] Dist2:   %lu\n", (unsigned long)distance2);
         print_log(buf);
-        snprintf(buf, sizeof(buf), "[ LED ] Show:           %d", (int)currentShow);
-        print_log(buf);
+        
     }
  
     // Wait for strip to be ready
