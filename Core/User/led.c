@@ -36,10 +36,10 @@ static uint8_t oscillateBrightness(float t, float period, uint8_t minVal, uint8_
 
 // Set the default LED colors around the robot
 void led_default(void){
-    ARGB_SetRGB(1, 128, 0,   0);     // Red
-    ARGB_SetRGB(2, 128, 128, 128);   // White
-    ARGB_SetRGB(3, 0,   128, 0);     // Green
-    ARGB_SetRGB(4, 128, 128, 128);   // White
+    ARGB_SetRGB(1, 128, 128, 128);   // White
+    ARGB_SetRGB(2, 128, 0,   0);     // Red
+    ARGB_SetRGB(3, 128, 128, 128);   // White
+    ARGB_SetRGB(4, 0,   128, 0);     // Green
 }
 
 // Turn off all the LEDs for startup
