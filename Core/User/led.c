@@ -51,19 +51,19 @@ void show_off (void){
 // Display low danger on the distance LED
 void show_dangerlow(void){
     led_default();
-    ARGB_SetRGB(0, 0, 255, 0);
+    ARGB_SetRGB(0, 60, 60, 255);
 }
 // Display med danger on the distance LED
 void show_dangermed(void){
 
     led_default();
-    ARGB_SetRGB(0, 255, 255, 0);
+    ARGB_SetRGB(0, 0, 0, 255);
 }
 
 // Display high danger on the distance LED
 void show_dangerhig(void) {
     led_default();
-    ARGB_SetRGB(0, 255, 0, 0);
+    ARGB_SetRGB(0, 128, 0, 128);
 }
 
 // Display oscillating on distance LED
