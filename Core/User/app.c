@@ -4,7 +4,7 @@
 #include "stm32_ros_topic.h"
 #include "sr04.h"
 #include "stm32g0xx_hal.h"
-// #include "led.h"
+#include "led.h"
 #include "fsk.h"
 // #include "sensor.h"
 #include "cargo.h"
@@ -17,9 +17,9 @@
 // Handles
 extern UART_HandleTypeDef huart3;
 
-__weak void init_led(void)    {}
-__weak void led_main(void)    {}
-
+// Subsystem States
+bool sonar_present = false;
+bool emag_present = false;
 
 // Subsystem startup functions
 void app_init(void)
@@ -28,7 +28,7 @@ void app_init(void)
     init_commands();
     init_led();
     init_fsk((uint8_t*)"BYE");
-    uint16_t vint = init_sr04();
+    sonar_present = init_sr04();
     init_cargo();
 }
 
@@ -67,9 +67,12 @@ void app(void)
         }
 
         ros_topic_main();
-        led_main();
+
+        if (sonar_present) {
+            led_main();
+        }
+
         cargo_main(cmd);
-        
         HAL_Delay(1);
         print_status_update(time_ms);
         profile_end();

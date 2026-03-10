@@ -92,12 +92,12 @@ uint16_t init_sr04(void){
     return vint;
 }
 // Timeout Disconnected
-uint16_t sr04_present(void){
+bool sr04_present(void){
     for(uint16_t i = 0; i < 10; i++){
         uint16_t timeout = get_distance();
         if(timeout != 0xFFFF){
-            return 0;
+            return false;
         }
     }
-    return 1;
+    return true;
 }
