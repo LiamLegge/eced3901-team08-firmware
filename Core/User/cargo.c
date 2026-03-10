@@ -139,8 +139,8 @@ void toggle_emag(void) {
 
 bool is_cargo_detected(uint16_t emag_voltage)
 {
-    const uint16_t LOW_THRESHOLD  = 652;
-    const uint16_t HIGH_THRESHOLD = 960;
+    const uint16_t LOW_THRESHOLD  = 40;
+    const uint16_t HIGH_THRESHOLD = 55;
 
     bool was_detected = cargo.cargo_detected;
 

@@ -33,7 +33,7 @@ void app_init(void)
 }
 
 void print_status_update(uint32_t time_ms) {
-    const uint32_t log_interval_ms = 250;
+    const uint32_t log_interval_ms = 1000;
     static uint32_t last_log_time = 0;
 
     if ((time_ms - last_log_time) >= log_interval_ms) {
