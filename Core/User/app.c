@@ -20,9 +20,6 @@ extern UART_HandleTypeDef huart3;
 __weak void init_led(void)    {}
 __weak void led_main(void)    {}
 
-__weak void init_sensor(void) {}
-__weak void sensor_main(void) {}
-
 __weak void init_sr04(void) {}
 __weak void sr04_main(void) {}
 
@@ -35,7 +32,7 @@ void app_init(void)
     init_led();
     init_fsk((uint8_t*)"BYE");
     init_sensor();
-    init_sr04();
+    uint16_t vint = init_sr04();
     init_cargo();
 }
 
