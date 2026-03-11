@@ -87,31 +87,31 @@ void init_led(void) {
     ARGB_Show();
 }
 
-t_ShowType check_show(uint16_t minDistance, uint16_t distance1) {
+t_ShowType check_show(uint16_t minDistance, uint16_t distance) {
     #define AVG_WINDOW_SIZE 5
     static uint16_t minDistanceBuffer[AVG_WINDOW_SIZE] = {0};
-    static uint16_t distance1Buffer[AVG_WINDOW_SIZE] = {0};
+    static uint16_t distanceBuffer[AVG_WINDOW_SIZE] = {0};
     static int bufferIndex = 0;
     static int bufferCount = 0;
 
     // Update buffers
     minDistanceBuffer[bufferIndex] = minDistance;
-    distance1Buffer[bufferIndex] = distance1;
+    distanceBuffer[bufferIndex] = distance;
     bufferIndex = (bufferIndex + 1) % AVG_WINDOW_SIZE;
     if (bufferCount < AVG_WINDOW_SIZE) bufferCount++;
 
     // Calculate averages
     uint32_t minDistanceSum = 0;
-    uint32_t distance1Sum = 0;
+    uint32_t distanceSum = 0;
     for (int i = 0; i < bufferCount; ++i) {
         minDistanceSum += minDistanceBuffer[i];
-        distance1Sum += distance1Buffer[i];
+        distanceSum += distanceBuffer[i];
     }
     uint16_t minDistanceAvg = (bufferCount > 0) ? (uint16_t)(minDistanceSum / bufferCount) : 0;
-    uint16_t distance1Avg = (bufferCount > 0) ? (uint16_t)(distance1Sum / bufferCount) : 0;
+    uint16_t distanceAvg = (bufferCount > 0) ? (uint16_t)(distanceSum / bufferCount) : 0;
 
     t_ShowType candidateShow = SHOW_OFF;
-    if(distance1Avg > 0 && distance1Avg <= 5){
+    if(distanceAvg > 0 && distanceAvg <= 5){
         candidateShow = SHOW_COLLECTED;
     }
     else if(minDistanceAvg > 0 && minDistanceAvg <= 62){
@@ -136,7 +136,7 @@ void led_main(void){
 
     // Simple Sorter
     uint16_t minDistance = (distance1 < distance2) ? distance1 : distance2;
-    t_ShowType currentShow = check_show(minDistance, distance1);
+    t_ShowType currentShow = check_show(minDistance, distance2);
     
     // Serial Send
     uint16_t last_time = 0;
