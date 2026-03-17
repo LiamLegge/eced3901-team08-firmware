@@ -135,7 +135,7 @@ void led_main(void){
     uint16_t distance2 = sr04_read(1);
 
     // Simple Sorter
-    if(distance1 < 10) distance1 = distance2; // If back sensor blocked by cargo, ignore
+    if(distance1 < 10){ distance1 = distance2;} // If back sensor blocked by cargo, ignore
     uint16_t minDistance = (distance1 < distance2) ? distance1 : distance2;
     t_ShowType currentShow = check_show(minDistance, distance2);
     
