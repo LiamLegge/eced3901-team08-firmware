@@ -111,7 +111,7 @@ t_ShowType check_show(uint16_t minDistance, uint16_t distance) {
     uint16_t distanceAvg = (bufferCount > 0) ? (uint16_t)(distanceSum / bufferCount) : 0;
 
     t_ShowType candidateShow = SHOW_OFF;
-    if(distanceAvg > 0 && distanceAvg <= 5){
+    if(distanceAvg > 0 && distanceAvg <= 10){
         candidateShow = SHOW_COLLECTED;
     }
     else if(minDistanceAvg > 0 && minDistanceAvg <= 62){
@@ -135,6 +135,7 @@ void led_main(void){
     uint16_t distance2 = sr04_read(1);
 
     // Simple Sorter
+    if(distance1 < 10) distance1 = distance2; // If back sensor blocked by cargo, ignore
     uint16_t minDistance = (distance1 < distance2) ? distance1 : distance2;
     t_ShowType currentShow = check_show(minDistance, distance2);
     
