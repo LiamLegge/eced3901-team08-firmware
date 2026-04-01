@@ -12,11 +12,7 @@ extern TIM_HandleTypeDef htim2;
 extern DMA_HandleTypeDef hdma_tim1_ch2;
 
 // Global Defines
-#define FRAME_DELAY_MS 10 
-#define VERBOSE true
-
-
-uint32_t frame = 0;
+#define VERBOSE false
 
 // Commands Define
 typedef enum {
@@ -40,10 +36,10 @@ static uint8_t oscillateBrightness(float t, float period, uint8_t minVal, uint8_
 
 // Set the default LED colors around the robot
 void led_default(void){
-    ARGB_SetRGB(1, 128, 0,   0);     // Red
-    ARGB_SetRGB(2, 128, 128, 128);   // White
-    ARGB_SetRGB(3, 0,   128, 0);     // Green
-    ARGB_SetRGB(4, 128, 128, 128);   // White
+    ARGB_SetRGB(1, 128, 128, 128);   // White
+    ARGB_SetRGB(2, 128, 0,   0);     // Red
+    ARGB_SetRGB(3, 128, 128, 128);   // White
+    ARGB_SetRGB(4, 0,   128, 0);     // Green
 }
 
 // Turn off all the LEDs for startup
@@ -55,24 +51,24 @@ void show_off (void){
 // Display low danger on the distance LED
 void show_dangerlow(void){
     led_default();
-    ARGB_SetRGB(0, 0, 255, 0);
+    ARGB_SetRGB(0, 60, 60, 255);
 }
 // Display med danger on the distance LED
 void show_dangermed(void){
 
     led_default();
-    ARGB_SetRGB(0, 255, 255, 0);
+    ARGB_SetRGB(0, 0, 0, 255);
 }
 
 // Display high danger on the distance LED
 void show_dangerhig(void) {
     led_default();
-    ARGB_SetRGB(0, 255, 0, 0);
+    ARGB_SetRGB(0, 128, 0, 128);
 }
 
 // Display oscillating on distance LED
-void show_collected(uint32_t frame) {
-    uint16_t t = (float)frame;
+void show_collected(void) {
+    uint16_t t = (uint16_t)(HAL_GetTick()/10);
     led_default();
 
     uint8_t hue = 35; // Gold
@@ -86,25 +82,49 @@ void show_collected(uint32_t frame) {
 void init_led(void) {
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn); // Enable the interrupt for the timer
     ARGB_Init();  // Initialization
-    ARGB_SetBrightness(128); // Set a moderate global brightness (0-255)
+    ARGB_SetBrightness(40); // Set a moderate global brightness (0-255)
     ARGB_Clear();
     ARGB_Show();
 }
 
-t_ShowType check_show(uint16_t distance) {
-    currentShow = 0;
-    if(distance > 0 && distance <= 5){
-        currentShow = SHOW_COLLECTED;
+t_ShowType check_show(uint16_t minDistance, uint16_t distance) {
+    #define AVG_WINDOW_SIZE 5
+    static uint16_t minDistanceBuffer[AVG_WINDOW_SIZE] = {0};
+    static uint16_t distanceBuffer[AVG_WINDOW_SIZE] = {0};
+    static int bufferIndex = 0;
+    static int bufferCount = 0;
+
+    // Update buffers
+    minDistanceBuffer[bufferIndex] = minDistance;
+    distanceBuffer[bufferIndex] = distance;
+    bufferIndex = (bufferIndex + 1) % AVG_WINDOW_SIZE;
+    if (bufferCount < AVG_WINDOW_SIZE) bufferCount++;
+
+    // Calculate averages
+    uint32_t minDistanceSum = 0;
+    uint32_t distanceSum = 0;
+    for (int i = 0; i < bufferCount; ++i) {
+        minDistanceSum += minDistanceBuffer[i];
+        distanceSum += distanceBuffer[i];
     }
-    else if(distance > 5 && distance <= 61){
-        currentShow = SHOW_DANGERHIG;
+    uint16_t minDistanceAvg = (bufferCount > 0) ? (uint16_t)(minDistanceSum / bufferCount) : 0;
+    uint16_t distanceAvg = (bufferCount > 0) ? (uint16_t)(distanceSum / bufferCount) : 0;
+
+    t_ShowType candidateShow = SHOW_OFF;
+    if(distanceAvg > 0 && distanceAvg <= 10){
+        candidateShow = SHOW_COLLECTED;
     }
-    else if(distance > 61 && distance <= 122){
-        currentShow = SHOW_DANGERMED;
+    else if(minDistanceAvg > 0 && minDistanceAvg <= 62){
+        candidateShow = SHOW_DANGERHIG;
+    }
+    else if(minDistanceAvg > 62 && minDistanceAvg <= 122){
+        candidateShow = SHOW_DANGERMED;
     }
     else{
-        currentShow = SHOW_DANGERLOW;
+        candidateShow = SHOW_DANGERLOW;
     }
+
+    currentShow = candidateShow;
     return currentShow;
 }
 
@@ -115,19 +135,20 @@ void led_main(void){
     uint16_t distance2 = sr04_read(1);
 
     // Simple Sorter
-    uint16_t minDistance = 0;
-    minDistance = (distance1 < distance2) ? distance1 : distance2;
-
-    t_ShowType currentShow = check_show(minDistance); 
-
-    if (VERBOSE) {
+    if(distance1 < 10){ distance1 = distance2;} // If back sensor blocked by cargo, ignore
+    uint16_t minDistance = (distance1 < distance2) ? distance1 : distance2;
+    t_ShowType currentShow = check_show(minDistance, distance2);
+    
+    // Serial Send
+    uint16_t last_time = 0;
+    if(HAL_GetTick() - last_time >= 1000){
         char buf[64];
-        snprintf(buf, sizeof(buf), "[ LED ] Dist1: (cm):   %lu", (unsigned long)distance1);
+        last_time = HAL_GetTick();
+        snprintf(buf, sizeof(buf), "[TOPIC] Dist1:   %lu\n", (unsigned long)distance1);
         print_log(buf);
-        snprintf(buf, sizeof(buf), "[ LED ] Dist2: (cm):   %lu", (unsigned long)distance2);
+        snprintf(buf, sizeof(buf), "[TOPIC] Dist2:   %lu\n", (unsigned long)distance2);
         print_log(buf);
-        snprintf(buf, sizeof(buf), "[ LED ] Show:           %d", (int)currentShow);
-        print_log(buf);
+        
     }
  
     // Wait for strip to be ready
@@ -146,12 +167,10 @@ void led_main(void){
             show_dangerhig();
             break;
         case SHOW_COLLECTED:
-            show_collected(frame);
+            show_collected();
             break;
         default:
             break;
     }
     ARGB_Show();
-    //HAL_Delay(FRAME_DELAY_MS);
-    frame++;
 }
