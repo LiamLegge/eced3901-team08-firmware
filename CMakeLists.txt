@@ -70,3 +70,36 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 
     # Add user defined libraries
 )
+
+# Toolchain should define CMAKE_OBJCOPY; if not, we fall back.
+if(NOT CMAKE_OBJCOPY)
+    find_program(CMAKE_OBJCOPY arm-none-eabi-objcopy)
+endif()
+
+if(NOT CMAKE_OBJCOPY)
+    message(FATAL_ERROR "arm-none-eabi-objcopy not found (CMAKE_OBJCOPY not set)")
+endif()
+
+set(BIN_FILE $<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>/${CMAKE_PROJECT_NAME}.bin)
+set(HEX_FILE $<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>/${CMAKE_PROJECT_NAME}.hex)
+
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${BIN_FILE}
+    COMMAND ${CMAKE_OBJCOPY} -O ihex   $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${HEX_FILE}
+    COMMENT "Generating ${CMAKE_PROJECT_NAME}.bin and .hex"
+)
+
+# Flash target
+# Change ST_FLASH if you want openocd, STM32_Programmer_CLI, etc.
+find_program(ST_FLASH st-flash)
+if(NOT ST_FLASH)
+#    message(FATAL_ERROR "st-flash not found. Install stlink-tools.")
+endif()
+
+add_custom_target(flash
+    COMMAND ${CMAKE_COMMAND} -E echo "Flashing ${BIN_FILE} to 0x08000000"
+    COMMAND sudo ${ST_FLASH} --reset write ${BIN_FILE} 0x08000000
+    DEPENDS ${CMAKE_PROJECT_NAME}
+    USES_TERMINAL
+)
+

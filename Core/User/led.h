@@ -1,9 +1,4 @@
-#ifndef LED_H
-#define LED_H
-
-#include "math.h"
-#include "ARGB.h"   
-#include "stm32g0xx_hal.h"
+#pragma  once 
 
 /* Easy definition of LEDs
 #define PORT 0
@@ -14,5 +9,4 @@
 */
 
 void led_main(void);
-
-#endif
+void init_led(void);
